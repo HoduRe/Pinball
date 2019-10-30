@@ -29,6 +29,7 @@ bool ModuleSceneIntro::Start()
 	box = App->textures->Load("pinball/crate.png");
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	level = App->textures->Load("pinball/level.png");
 
 	scene_rect.x = 0;
 	scene_rect.y = 0;
@@ -37,6 +38,8 @@ bool ModuleSceneIntro::Start()
 	stage = ST_TITLE_SCREEN;
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
+
+	
 
 	return ret;
 }
@@ -48,8 +51,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(circle);
 	App->textures->Unload(box);
 	App->textures->Unload(rick);
-	App->textures->Unload(low_stage);
-	App->textures->Unload(high_stage);
+	App->textures->Unload(level);
 	App->textures->Unload(title_stage);
 
 	return true;
@@ -131,14 +133,16 @@ update_status ModuleSceneIntro::Update()
 
 
 	// Stage Print
-	if (stage == ST_TITLE_SCREEN) {
-		App->renderer->Blit(title_stage, 0, 0, &scene_rect);
+	if (stage == ST_TITLE_SCREEN) 
+	{
+		App->renderer->DrawQuad(a, 50, 50, 50);		
 	}
 	else if (stage == ST_LOW_STAGE) {
-		App->renderer->Blit(low_stage, 0, 0, &scene_rect);
+		scene_rect.y = SCREEN_HEIGHT;
+		App->renderer->Blit(level, 0, 0, &scene_rect);
 	}
 	else if (stage == ST_HIGH_STAGE) {
-		App->renderer->Blit(high_stage, 0, 0, &scene_rect);
+		App->renderer->Blit(level, 0, 0, &scene_rect);
 	}
 
 	// Figures Print
@@ -152,6 +156,11 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	c = boxes.getFirst();
+
+	//Provisional key for changing stage_state
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->scene_intro->stage == ST_TITLE_SCREEN) {
+		App->scene_intro->stage == ST_LOW_STAGE;
+	}
 
 /*	while(c != NULL)
 	{

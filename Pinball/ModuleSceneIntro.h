@@ -34,11 +34,12 @@ public:
 	PhysBody* sensor;
 	bool sensed;
 
+	SDL_Rect a{ 10,10,10,10 };
+
 	SDL_Texture* circle;
 	SDL_Texture* box;
 	SDL_Texture* rick;
-	SDL_Texture* low_stage;
-	SDL_Texture* high_stage;
+	SDL_Texture* level;
 	SDL_Texture* title_stage;
 	SDL_Rect scene_rect;
 	stage_state stage;

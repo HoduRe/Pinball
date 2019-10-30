@@ -16,4 +16,5 @@ public:
 
 public:
 	iPoint position;
+	SDL_Texture* player;
 };
