@@ -46,7 +46,14 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (stage == ST_LOW_STAGE) {
+
+	}
+	else if (stage == ST_HIGH_STAGE) {
+
+	}
+	
+	/*if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		ray_on = !ray_on;
 		ray.x = App->input->GetMouseX();
@@ -103,14 +110,14 @@ update_status ModuleSceneIntro::Update()
 		};
 
 		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
-	}
+	}*/
 
 	// Prepare for raycast ------------------------------------------------------
 	
-	iPoint mouse;
+	/*iPoint mouse;
 	mouse.x = App->input->GetMouseX();
 	mouse.y = App->input->GetMouseY();
-	int ray_hit = ray.DistanceTo(mouse);
+	int ray_hit = ray.DistanceTo(mouse);*/
 
 	fVector normal(0.0f, 0.0f);
 
@@ -128,7 +135,7 @@ update_status ModuleSceneIntro::Update()
 
 	c = boxes.getFirst();
 
-	while(c != NULL)
+/*	while(c != NULL)
 	{
 		int x, y;
 		c->data->GetPosition(x, y);
@@ -141,8 +148,8 @@ update_status ModuleSceneIntro::Update()
 		}
 		c = c->next;
 	}
-
-	c = ricks.getFirst();
+*/
+/*	c = ricks.getFirst();
 
 	while(c != NULL)
 	{
@@ -164,7 +171,7 @@ update_status ModuleSceneIntro::Update()
 		if(normal.x != 0.0f)
 			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
 	}
-
+*/
 	return UPDATE_CONTINUE;
 }
 

@@ -4,6 +4,13 @@
 #include "p2Point.h"
 #include "Globals.h"
 
+enum stage_state {
+	ST_UNKNOWN,
+	ST_LOW_STAGE,
+	ST_HIGH_STAGE,
+	ST_BONUS_STAGE
+};
+
 class PhysBody;
 
 class ModuleSceneIntro : public Module
@@ -28,6 +35,7 @@ public:
 	SDL_Texture* circle;
 	SDL_Texture* box;
 	SDL_Texture* rick;
+	stage_state stage;
 	uint bonus_fx;
 	p2Point<int> ray;
 	bool ray_on;
