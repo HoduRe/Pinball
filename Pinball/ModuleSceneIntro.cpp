@@ -30,6 +30,11 @@ bool ModuleSceneIntro::Start()
 	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
+	scene_rect.x = 0;
+	scene_rect.y = 0;
+	scene_rect.w = SCREEN_WIDTH;
+	scene_rect.h = SCREEN_HEIGHT;
+
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
 	return ret;
@@ -39,6 +44,11 @@ bool ModuleSceneIntro::Start()
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
+	App->textures->Unload(circle);
+	App->textures->Unload(box);
+	App->textures->Unload(rick);
+	App->textures->Unload(low_stage);
+	App->textures->Unload(high_stage);
 
 	return true;
 }
@@ -46,13 +56,6 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	if (stage == ST_LOW_STAGE) {
-
-	}
-	else if (stage == ST_HIGH_STAGE) {
-
-	}
-	
 	/*if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		ray_on = !ray_on;
@@ -124,6 +127,16 @@ update_status ModuleSceneIntro::Update()
 	// All draw functions ------------------------------------------------------
 	p2List_item<PhysBody*>* c = circles.getFirst();
 
+
+	// Stage Print
+	if (stage == ST_LOW_STAGE) {
+		App->renderer->Blit(low_stage, 0, 0, &scene_rect);
+	}
+	else if (stage == ST_HIGH_STAGE) {
+		App->renderer->Blit(high_stage, 0, 0, &scene_rect);
+	}
+
+	// Figures Print
 	while(c != NULL)
 	{
 		int x, y;

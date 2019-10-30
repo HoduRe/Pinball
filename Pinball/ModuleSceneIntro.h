@@ -3,6 +3,7 @@
 #include "p2List.h"
 #include "p2Point.h"
 #include "Globals.h"
+#include "SDL/include/SDL.h"
 
 enum stage_state {
 	ST_UNKNOWN,
@@ -35,6 +36,9 @@ public:
 	SDL_Texture* circle;
 	SDL_Texture* box;
 	SDL_Texture* rick;
+	SDL_Texture* low_stage;
+	SDL_Texture* high_stage;
+	SDL_Rect scene_rect;
 	stage_state stage;
 	uint bonus_fx;
 	p2Point<int> ray;
