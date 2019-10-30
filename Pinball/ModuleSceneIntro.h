@@ -7,6 +7,7 @@
 
 enum stage_state {
 	ST_UNKNOWN,
+	ST_TITLE_SCREEN,
 	ST_LOW_STAGE,
 	ST_HIGH_STAGE,
 	ST_BONUS_STAGE
@@ -38,6 +39,7 @@ public:
 	SDL_Texture* rick;
 	SDL_Texture* low_stage;
 	SDL_Texture* high_stage;
+	SDL_Texture* title_stage;
 	SDL_Rect scene_rect;
 	stage_state stage;
 	uint bonus_fx;

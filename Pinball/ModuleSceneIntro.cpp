@@ -34,6 +34,7 @@ bool ModuleSceneIntro::Start()
 	scene_rect.y = 0;
 	scene_rect.w = SCREEN_WIDTH;
 	scene_rect.h = SCREEN_HEIGHT;
+	stage = ST_TITLE_SCREEN;
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
@@ -49,6 +50,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(rick);
 	App->textures->Unload(low_stage);
 	App->textures->Unload(high_stage);
+	App->textures->Unload(title_stage);
 
 	return true;
 }
@@ -129,7 +131,10 @@ update_status ModuleSceneIntro::Update()
 
 
 	// Stage Print
-	if (stage == ST_LOW_STAGE) {
+	if (stage == ST_TITLE_SCREEN) {
+		App->renderer->Blit(title_stage, 0, 0, &scene_rect);
+	}
+	else if (stage == ST_LOW_STAGE) {
 		App->renderer->Blit(low_stage, 0, 0, &scene_rect);
 	}
 	else if (stage == ST_HIGH_STAGE) {
