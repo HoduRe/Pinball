@@ -43,6 +43,7 @@ update_status ModulePlayer::Update()
 update_status ModulePlayer::PreUpdate() {
 	
 	// Stage calculation
+	App->scene_intro->buffer_stage = App->scene_intro->stage;
 	if (position.y < 0 && App->scene_intro->stage == ST_LOW_STAGE) {
 		App->scene_intro->stage = ST_HIGH_STAGE;
 	}

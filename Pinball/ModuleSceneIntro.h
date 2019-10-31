@@ -28,6 +28,8 @@ public:
 	void LowStageBlit();
 	void HighStageBlit();
 	void TitleBlit();
+	void ChargeLowStage();
+	void ChargeHighStage();
 
 public:
 	p2List<PhysBody*> circles;
@@ -41,6 +43,7 @@ public:
 	SDL_Rect scene_rect;
 	SDL_Rect elements_rect;
 	stage_state stage;
+	stage_state buffer_stage;
 	uint bonus_fx;
 	p2Point<int> ray;
 	bool ray_on;

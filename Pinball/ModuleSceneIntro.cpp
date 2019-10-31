@@ -36,7 +36,8 @@ bool ModuleSceneIntro::Start()
 
 	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
-	
+	ChargeLowStage();
+	ChargeHighStage();
 
 	return ret;
 }
@@ -130,12 +131,21 @@ update_status ModuleSceneIntro::Update()
 		TitleBlit();
 	}
 	else if (stage == ST_LOW_STAGE) {
+		if (buffer_stage != ST_LOW_STAGE) {
+			App->physics->Disable();
+			App->physics->Enable();
+			ChargeLowStage();
+		}
 		LowStageBlit();
 	}
 	else if (stage == ST_HIGH_STAGE) {
+		if (buffer_stage != ST_HIGH_STAGE) {
+			App->physics->Disable();
+			App->physics->Enable();
+			ChargeHighStage();
+		}
 		HighStageBlit();
 	}
-
 /*	// Figures Print
 	while(c != NULL)
 	{
@@ -428,4 +438,20 @@ void ModuleSceneIntro::TitleBlit() {
 	elements_rect.w = 192;
 	elements_rect.h = 104;
 	App->renderer->Blit(scene, 24, 24, &elements_rect);
+}
+
+void ModuleSceneIntro::ChargeLowStage() {
+	App->physics->CreateCircle(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30, false);
+	App->physics->CreateCircle(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30, false);
+	App->physics->CreateCircle(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30, false);
+	App->physics->CreateRectangle(104, 50, 3, 12, false);
+	App->physics->CreateRectangle(120, 50, 3, 12, false);
+	App->physics->CreateRectangle(136, 50, 3, 12, false);
+	App->physics->CreateRectangle(152, 50, 3, 12, false);
+	App->physics->CreateRectangle(168, 50, 3, 12, false);
+	App->physics->CreateRectangle(184, 50, 3, 12, false);
+}
+
+void ModuleSceneIntro::ChargeHighStage() {
+
 }
