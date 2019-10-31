@@ -214,16 +214,210 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 }
 
 void ModuleSceneIntro::LowStageBlit() {
-	scene_rect.x = 233;
+	scene_rect.x = 233;	// Scene blit
 	scene_rect.y = SCREEN_HEIGHT;
+	scene_rect.w = SCREEN_WIDTH;
+	scene_rect.h = SCREEN_HEIGHT;
 	App->renderer->Blit(scene, 0, 0, &scene_rect);
-
+	scene_rect.x = 61;	// Orange circle blit
+	scene_rect.y = 45;
+	scene_rect.w = 22;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 132, 101, &scene_rect);
+	scene_rect.x = 12;	// Left pink circle blit
+	scene_rect.y = 44;
+	scene_rect.w = 22;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 111, 67, &scene_rect);
+	scene_rect.x = 12;	// Right pink circle blit
+	scene_rect.y = 44;
+	scene_rect.w = 22;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 152, 67, &scene_rect);
+	scene_rect.x = 9;	// First green card blit
+	scene_rect.y = 79;
+	scene_rect.w = 14;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 104,	20, &scene_rect);
+	scene_rect.x = 9;	// Second green card blit
+	scene_rect.y = 79;
+	scene_rect.w = 14;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 120, 20, &scene_rect);
+	scene_rect.x = 9;	// Third green card blit
+	scene_rect.y = 79;
+	scene_rect.w = 14;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 136, 20, &scene_rect);
+	scene_rect.x = 9;	// Fourth green card blit
+	scene_rect.y = 79;
+	scene_rect.w = 14;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 152, 20, &scene_rect);
+	scene_rect.x = 9;	// Fifth green card blit
+	scene_rect.y = 79;
+	scene_rect.w = 14;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 168, 20, &scene_rect);
+	scene_rect.x = 8;	// Tag 1 blit
+	scene_rect.y = 109;
+	scene_rect.w = 15;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 80, 55, &scene_rect);
+	scene_rect.x = 8;	// Tag 2 blit
+	scene_rect.y = 117;
+	scene_rect.w = 15;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 80, 63, &scene_rect);
+	scene_rect.x = 8;	// Tag 3 blit
+	scene_rect.y = 125;
+	scene_rect.w = 15;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 80, 71, &scene_rect);
+	scene_rect.x = 8;	// Tag 4 blit
+	scene_rect.y = 133;
+	scene_rect.w = 15;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 80, 79, &scene_rect);
+	scene_rect.x = 8;	// Tag 5 blit
+	scene_rect.y = 141;
+	scene_rect.w = 15;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 80, 87, &scene_rect);
+	scene_rect.x = 8;	// Tag 6 blit
+	scene_rect.y = 149;
+	scene_rect.w = 15;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 80, 95, &scene_rect);
+	scene_rect.x = 8;	// Tag 7 blit
+	scene_rect.y = 157;
+	scene_rect.w = 15;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 80, 103, &scene_rect);
+	scene_rect.x = 60;	// Left egg blit
+	scene_rect.y = 10;
+	scene_rect.w = 9;
+	scene_rect.h = 13;
+	App->renderer->Blit(scene, 119, 149, &scene_rect);
+	scene_rect.x = 60;	// Middle egg blit
+	scene_rect.y = 10;
+	scene_rect.w = 9;
+	scene_rect.h = 13;
+	App->renderer->Blit(scene, 137, 149, &scene_rect);
+	scene_rect.x = 60;	// Right egg blit
+	scene_rect.y = 10;
+	scene_rect.w = 9;
+	scene_rect.h = 13;
+	App->renderer->Blit(scene, 155, 149, &scene_rect);
 
 }
 
 void ModuleSceneIntro::HighStageBlit() {
+	scene_rect.x = 233;
 	scene_rect.y = 0;
+	scene_rect.w = SCREEN_WIDTH;
+	scene_rect.h = SCREEN_HEIGHT;
 	App->renderer->Blit(scene, 0, 0, &scene_rect);
+	scene_rect.x = 8;	// First vertical orange rectangle blit
+	scene_rect.y = 168;
+	scene_rect.w = 2;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 88, 128, &scene_rect);
+	scene_rect.x = 8;	// Second vertical orange rectangle blit
+	scene_rect.y = 168;
+	scene_rect.w = 2;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 88, 136, &scene_rect);
+	scene_rect.x = 8;	// Third vertical orange rectangle blit
+	scene_rect.y = 168;
+	scene_rect.w = 2;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 88, 144, &scene_rect);
+	scene_rect.x = 8;	// Fourth vertical orange rectangle blit
+	scene_rect.y = 168;
+	scene_rect.w = 2;
+	scene_rect.h = 7;
+	App->renderer->Blit(scene, 88, 152, &scene_rect);
+	scene_rect.x = 101;	// Diagonal orange rectangle blit
+	scene_rect.y = 167;
+	scene_rect.w = 8;
+	scene_rect.h = 8;
+	App->renderer->Blit(scene, 107, 80, &scene_rect);
+	scene_rect.x = 12;	// Pink circle blit
+	scene_rect.y = 44;
+	scene_rect.w = 22;
+	scene_rect.h = 24;
+	App->renderer->Blit(scene, 135, 89, &scene_rect);
+	scene_rect.x = 61;	// First (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 88, 39, &scene_rect);
+	scene_rect.x = 61;	// Second (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 83, 48, &scene_rect);
+	scene_rect.x = 61;	// Three (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 78, 57, &scene_rect);
+	scene_rect.x = 61;	// Fourth (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 76, 67, &scene_rect);
+	scene_rect.x = 61;	// Fifth (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 76, 77, &scene_rect);
+	scene_rect.x = 61;	// Sixth (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 78, 88, &scene_rect);
+	scene_rect.x = 61;	// Seventh (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 83, 97, &scene_rect);
+	scene_rect.x = 61;	// Eight (from above) circle blit
+	scene_rect.y = 169;
+	scene_rect.w = 4;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, 88, 105, &scene_rect);
+	scene_rect.x = 29;	// Left wallrus blit
+	scene_rect.y = 79;
+	scene_rect.w = 16;
+	scene_rect.h = 17;
+	App->renderer->Blit(scene, 111, 111, &scene_rect);
+	scene_rect.x = 90;	// Right wallrus blit
+	scene_rect.y = 177;
+	scene_rect.w = 16;
+	scene_rect.h = 17;
+	App->renderer->Blit(scene, 163, 113, &scene_rect);
+	scene_rect.x = 113;	// Pink moving platform blit
+	scene_rect.y = 33;
+	scene_rect.w = 14;
+	scene_rect.h = 5;
+	App->renderer->Blit(scene, SCREEN_WIDTH / 2, 138, &scene_rect);
+	scene_rect.x = 10;	// Left penguin blit
+	scene_rect.y = 8;
+	scene_rect.w = 12;
+	scene_rect.h = 14;
+	App->renderer->Blit(scene, 123, 146, &scene_rect);
+	scene_rect.x = 27;	// Center penguin blit
+	scene_rect.y = 8;
+	scene_rect.w = 12;
+	scene_rect.h = 14;
+	App->renderer->Blit(scene, 139, 146, &scene_rect);
+	scene_rect.x = 43;	// Right penguin blit
+	scene_rect.y = 8;
+	scene_rect.w = 12;
+	scene_rect.h = 14;
+	App->renderer->Blit(scene, 155, 146, &scene_rect);
 
 }
 

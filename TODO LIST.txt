@@ -1,0 +1,14 @@
+Make the ball move by physics
+Add edges
+Make edges coordinate with the flippers
+Add UI
+Add points
+Add combo score
+Add specific amount of balls per round
+Save previous score in a game session
+Implement audios
+Clear begin and end, implement cycles
+Kicker animation
+Add elements change when hit
+Check memory leaks
+Playtest

@@ -16,6 +16,12 @@ Currently there is no installation required, just open the .exe provided in the 
 
 ### Player Controls: <br>
 
+## Differences
+
+<ul>-The upper left balls from the higher stage are slightly differently positioned, since we couldn't find a sprite for them,
+which led to having different size, and so, to being in a different place than intended<br>
+</ul>
+
 ## Credits
 
 
