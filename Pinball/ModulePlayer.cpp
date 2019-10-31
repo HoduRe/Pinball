@@ -46,7 +46,7 @@ update_status ModulePlayer::PreUpdate() {
 	if (position.y < 0 && App->scene_intro->stage == ST_LOW_STAGE) {
 		App->scene_intro->stage = ST_HIGH_STAGE;
 	}
-	if (position.y > SCREEN_HEIGHT /*&& App->scene_intro->stage == ST_HIGH_STAGE*/) {
+	if (position.y > SCREEN_HEIGHT && App->scene_intro->stage == ST_HIGH_STAGE) {
 		App->scene_intro->stage = ST_LOW_STAGE;
 	}
   	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->scene_intro->stage != ST_LOW_STAGE) {

@@ -25,6 +25,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	void LowStageBlit();
+	void HighStageBlit();
+	void TitleBlit();
 
 public:
 	p2List<PhysBody*> circles;
@@ -34,14 +37,9 @@ public:
 	PhysBody* sensor;
 	bool sensed;
 
-	SDL_Rect a{ 10,10,10,10 };
-
-	SDL_Texture* circle;
-	SDL_Texture* box;
-	SDL_Texture* rick;
-	SDL_Texture* level;
-	SDL_Texture* title_stage;
+	SDL_Texture* scene;
 	SDL_Rect scene_rect;
+	SDL_Rect elements_rect;
 	stage_state stage;
 	uint bonus_fx;
 	p2Point<int> ray;

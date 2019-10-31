@@ -9,7 +9,7 @@
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	circle = box = rick = NULL;
+	scene = NULL;
 	ray_on = false;
 	sensed = false;
 }
@@ -25,11 +25,8 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
-	circle = App->textures->Load("pinball/wheel.png"); 
-	box = App->textures->Load("pinball/crate.png");
-	rick = App->textures->Load("pinball/rick_head.png");
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
-	level = App->textures->Load("pinball/level.png");
+	scene = App->textures->Load("pinball/level_elements.png");
 
 	scene_rect.x = 0;
 	scene_rect.y = 0;
@@ -48,11 +45,7 @@ bool ModuleSceneIntro::Start()
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
-	App->textures->Unload(circle);
-	App->textures->Unload(box);
-	App->textures->Unload(rick);
-	App->textures->Unload(level);
-	App->textures->Unload(title_stage);
+	App->textures->Unload(scene);
 
 	return true;
 }
@@ -133,19 +126,17 @@ update_status ModuleSceneIntro::Update()
 
 
 	// Stage Print
-	if (stage == ST_TITLE_SCREEN) 
-	{
-		App->renderer->DrawQuad(a, 50, 50, 50);		
+	if (stage == ST_TITLE_SCREEN) {
+		TitleBlit();
 	}
 	else if (stage == ST_LOW_STAGE) {
-		scene_rect.y = SCREEN_HEIGHT;
-		App->renderer->Blit(level, 0, 0, &scene_rect);
+		LowStageBlit();
 	}
 	else if (stage == ST_HIGH_STAGE) {
-		App->renderer->Blit(level, 0, 0, &scene_rect);
+		HighStageBlit();
 	}
 
-	// Figures Print
+/*	// Figures Print
 	while(c != NULL)
 	{
 		int x, y;
@@ -220,4 +211,27 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		bodyB->GetPosition(x, y);
 		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
 	}*/
+}
+
+void ModuleSceneIntro::LowStageBlit() {
+	scene_rect.x = 233;
+	scene_rect.y = SCREEN_HEIGHT;
+	App->renderer->Blit(scene, 0, 0, &scene_rect);
+
+
+}
+
+void ModuleSceneIntro::HighStageBlit() {
+	scene_rect.y = 0;
+	App->renderer->Blit(scene, 0, 0, &scene_rect);
+
+}
+
+void ModuleSceneIntro::TitleBlit() {
+	App->renderer->DrawQuad(scene_rect, 25, 25, 25);
+	elements_rect.x = 8;
+	elements_rect.y = 199;
+	elements_rect.w = 192;
+	elements_rect.h = 104;
+	App->renderer->Blit(scene, 24, 24, &elements_rect);
 }
