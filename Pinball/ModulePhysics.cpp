@@ -60,6 +60,8 @@ update_status ModulePhysics::PreUpdate()
 
 PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic_body)
 {
+	x = x * SCREEN_SIZE;
+	y = y * SCREEN_SIZE;
 	b2BodyDef body;
 	if (dynamic_body == true) { body.type = b2_dynamicBody; }
 	else if (dynamic_body == false) { body.type = b2_staticBody; }
@@ -85,6 +87,11 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic_bod
 
 PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, bool dynamic_body)
 {
+	x = x * SCREEN_SIZE;
+	y = y * SCREEN_SIZE;
+	width = width * SCREEN_SIZE;
+	height = height * SCREEN_SIZE;
+
 	b2BodyDef body;
 	if (dynamic_body == true) { body.type = b2_dynamicBody; }
 	else if (dynamic_body == false) { body.type = b2_staticBody; }
@@ -111,6 +118,11 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, bo
 
 PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
 {
+	x = x * SCREEN_SIZE;
+	y = y * SCREEN_SIZE;
+	width = width * SCREEN_SIZE;
+	height = height * SCREEN_SIZE;
+
 	b2BodyDef body;
 	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
@@ -136,10 +148,37 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
+void ModulePhysics::CreateFlicker(b2Vec2 circle_coordinates) {
+	b2RevoluteJointDef def;
+	b2RevoluteJoint* revolute_joint;
+	b2Body* bodyA = nullptr;
+	b2Body* bodyB = nullptr;
+	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+	{
+		for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
+		{
+			if (f->GetBody()->GetFixtureList()->GetShape()->TestPoint(f->GetBody()->GetTransform(), circle_coordinates) == true) {
+				bodyA = f->GetBody();
+			}
+			else if (f->GetBody()->GetFixtureList()->GetShape()->TestPoint(f->GetBody()->GetTransform(), circle_coordinates) == true) {
+				bodyB = f->GetBody();
+			}
+			if (bodyA != nullptr && bodyB != nullptr) {
+				def.Initialize(bodyA, bodyB, bodyA->GetWorldCenter());
+				revolute_joint = (b2RevoluteJoint*)world->CreateJoint(&def);
+			}
+		}
+	}
+}
+
+PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool dynamic_body)
 {
+	x = x * SCREEN_SIZE;
+	y = y * SCREEN_SIZE;
+
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	if (dynamic_body == true) { body.type = b2_dynamicBody; }
+	else if (dynamic_body == false) { body.type = b2_staticBody; }
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
@@ -149,8 +188,8 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size)
 
 	for(uint i = 0; i < size / 2; ++i)
 	{
-		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0]);
-		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0] * SCREEN_SIZE);
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1] * SCREEN_SIZE);
 	}
 
 	shape.CreateLoop(p, size / 2);
@@ -192,7 +231,7 @@ update_status ModulePhysics::PostUpdate()
 				{
 					b2CircleShape* shape = (b2CircleShape*)f->GetShape();
 					b2Vec2 pos = f->GetBody()->GetPosition();
-					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
+					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 100, 100);
 				}
 				break;
 
@@ -207,6 +246,7 @@ update_status ModulePhysics::PostUpdate()
 					{
 						v = b->GetWorldPoint(polygonShape->GetVertex(i));
 						if(i > 0)
+
 							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 
 						prev = v;

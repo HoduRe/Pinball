@@ -9,6 +9,8 @@ Save previous score in a game session
 Implement audios
 Clear begin and end, implement cycles
 Kicker animation
+High stage one-side colliders
 Add elements change when hit
+Red blocks spit the ball when entered
 Check memory leaks
 Playtest

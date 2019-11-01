@@ -10,8 +10,6 @@
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	scene = NULL;
-	ray_on = false;
-	sensed = false;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -28,16 +26,7 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	scene = App->textures->Load("pinball/level_elements.png");
 
-	scene_rect.x = 0;
-	scene_rect.y = 0;
-	scene_rect.w = SCREEN_WIDTH;
-	scene_rect.h = SCREEN_HEIGHT;
 	stage = ST_TITLE_SCREEN;
-
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
-
-	ChargeLowStage();
-	ChargeHighStage();
 
 	return ret;
 }
@@ -54,79 +43,11 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	/*if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		ray_on = !ray_on;
-		ray.x = App->input->GetMouseX();
-		ray.y = App->input->GetMouseY();
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
-		circles.getLast()->data->listener = this;
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		// Pivot 0, 0
-		int rick_head[64] = {
-			14, 36,
-			42, 40,
-			40, 0,
-			75, 30,
-			88, 4,
-			94, 39,
-			111, 36,
-			104, 58,
-			107, 62,
-			117, 67,
-			109, 73,
-			110, 85,
-			106, 91,
-			109, 99,
-			103, 104,
-			100, 115,
-			106, 121,
-			103, 125,
-			98, 126,
-			95, 137,
-			83, 147,
-			67, 147,
-			53, 140,
-			46, 132,
-			34, 136,
-			38, 126,
-			23, 123,
-			30, 114,
-			10, 102,
-			29, 90,
-			0, 75,
-			30, 62
-		};
-
-		ricks.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), rick_head, 64));
-	}*/
-
-	// Prepare for raycast ------------------------------------------------------
-	
-	/*iPoint mouse;
-	mouse.x = App->input->GetMouseX();
-	mouse.y = App->input->GetMouseY();
-	int ray_hit = ray.DistanceTo(mouse);*/
-
-	fVector normal(0.0f, 0.0f);
-
-	// All draw functions ------------------------------------------------------
-	p2List_item<PhysBody*>* c = circles.getFirst();
-
-
 	// Stage Print
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{
+		App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25, true);
+	}
 	if (stage == ST_TITLE_SCREEN) {
 		TitleBlit();
 	}
@@ -140,66 +61,13 @@ update_status ModuleSceneIntro::Update()
 	}
 	else if (stage == ST_HIGH_STAGE) {
 		if (buffer_stage != ST_HIGH_STAGE) {
-			App->physics->Disable();
+				App->physics->Disable();
 			App->physics->Enable();
 			ChargeHighStage();
 		}
 		HighStageBlit();
 	}
-/*	// Figures Print
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		if(c->data->Contains(App->input->GetMouseX(), App->input->GetMouseY()))
-			App->renderer->Blit(circle, x, y, NULL, 1.0f, c->data->GetRotation());
-		c = c->next;
-	}
 
-	c = boxes.getFirst();
-
-	//Provisional key for changing stage_state
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && App->scene_intro->stage == ST_TITLE_SCREEN) {
-		App->scene_intro->stage == ST_LOW_STAGE;
-	}
-
-/*	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(box, x, y, NULL, 1.0f, c->data->GetRotation());
-		if(ray_on)
-		{
-			int hit = c->data->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);
-			if(hit >= 0)
-				ray_hit = hit;
-		}
-		c = c->next;
-	}
-*/
-/*	c = ricks.getFirst();
-
-	while(c != NULL)
-	{
-		int x, y;
-		c->data->GetPosition(x, y);
-		App->renderer->Blit(rick, x, y, NULL, 1.0f, c->data->GetRotation());
-		c = c->next;
-	}
-
-	// ray -----------------
-	if(ray_on == true)
-	{
-		fVector destination(mouse.x-ray.x, mouse.y-ray.y);
-		destination.Normalize();
-		destination *= ray_hit;
-
-		App->renderer->DrawLine(ray.x, ray.y, ray.x + destination.x, ray.y + destination.y, 255, 255, 255);
-
-		if(normal.x != 0.0f)
-			App->renderer->DrawLine(ray.x + destination.x, ray.y + destination.y, ray.x + destination.x + normal.x * 25.0f, ray.y + destination.y + normal.y * 25.0f, 100, 255, 100);
-	}
-*/
 	return UPDATE_CONTINUE;
 }
 
@@ -209,18 +77,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 	App->audio->PlayFx(bonus_fx);
 
-	/*
-	if(bodyA)
-	{
-		bodyA->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
-	}
-
-	if(bodyB)
-	{
-		bodyB->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
-	}*/
 }
 
 void ModuleSceneIntro::LowStageBlit() {
@@ -441,17 +297,36 @@ void ModuleSceneIntro::TitleBlit() {
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
-	App->physics->CreateCircle(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30, false);
-	App->physics->CreateCircle(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30, false);
-	App->physics->CreateCircle(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30, false);
-	App->physics->CreateRectangle(104, 50, 3, 12, false);
-	App->physics->CreateRectangle(120, 50, 3, 12, false);
-	App->physics->CreateRectangle(136, 50, 3, 12, false);
-	App->physics->CreateRectangle(152, 50, 3, 12, false);
-	App->physics->CreateRectangle(168, 50, 3, 12, false);
-	App->physics->CreateRectangle(184, 50, 3, 12, false);
+	int left_flicker[6] = { 4, 0, 0, 5, 29, 17 };
+	int right_flicker[6] = { 25, 0, 29, 5, 0, 17 };
+	b2Vec2 circle1 (102, 193);
+	b2Vec2 circle2 (188, 193);
+	App->physics->CreateCircle(107, 193, 5, false);	// Left flicker anchor point
+	App->physics->CreateCircle(180, 193, 5, false);	// Right flicker anchor point
+	App->physics->CreateChain(102, 193, left_flicker, 6, false);	// Left flicker
+	App->physics->CreateChain(156, 193, right_flicker, 6, false);	// Right flicker
+	App->physics->CreateFlicker(circle1);		// Left flicker joint creation
+	App->physics->CreateFlicker(circle2);		// Right flicker joint creation
+
+	App->physics->CreateCircle(143, 113, 30, false);	// Orange circle hitbox
+	App->physics->CreateCircle(122, 79, 30, false);		// Left pink circle hitbox
+	App->physics->CreateCircle(163, 79, 30, false);		// Right pink circle hitbox
+	App->physics->CreateRectangle(104, 50, 3, 12, false);	// First (from left) palet under the green cards hitbox
+	App->physics->CreateRectangle(120, 50, 3, 12, false);	// Second (from left) palet under the green cards hitbox
+	App->physics->CreateRectangle(136, 50, 3, 12, false);	// Third (from left) palet under the green cards hitbox
+	App->physics->CreateRectangle(152, 50, 3, 12, false);	// Fourth (from left) palet under the green cards hitbox
+	App->physics->CreateRectangle(168, 50, 3, 12, false);	// Fifth (from left) palet under the green cards hitbox
+	App->physics->CreateRectangle(184, 50, 3, 12, false);	// Sixth (from left) palet under the green cards hitbox
+	App->physics->CreateRectangle(225, 204, 21, 87, false);	// Kicker hitbox hitbox
+	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
+	App->physics->CreateRectangle(216, 148, 4, 24, false); // First right border hitbox
+	App->physics->CreateRectangle(233, 80, 4, 162, false); // Last right border hitbox
 }
 
 void ModuleSceneIntro::ChargeHighStage() {
+	App->physics->CreateRectangle(151, 13, 160, 25, false); // Upper border hitbox
+	App->physics->CreateRectangle(216, 107, 6, 47, false); // Right obstacle border hitbox
+	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
+	App->physics->CreateRectangle(233, 121, 4, 242, false); // Last right border hitbox
 
 }

@@ -18,8 +18,8 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 	player = App->textures->Load("pinball/player.png");
-	position.x = 10;
-	position.y = 10;
+	position.x = 220;
+	position.y = 107;
 	return true;
 }
 
