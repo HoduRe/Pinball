@@ -85,7 +85,31 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic_bod
 
 	return pbody;
 }
+PhysBody* ModulePhysics::CreateCircleSensor(int x, int y, int radius)
+{
+	b2BodyDef body;
 
+	body.type = b2_staticBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2CircleShape shape;
+	shape.m_radius = PIXEL_TO_METERS(radius);
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.density = 1.0f;
+	fixture.isSensor = true;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = pbody->height = radius;
+
+	return pbody;
+}
 PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, bool dynamic_body)
 {
 	x = x * SCREEN_SIZE;
@@ -395,9 +419,30 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
 	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
+
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	{
+		if (physA == iterator->data)
+		{
+			App->scene_intro->cien = true;
+		}
+	}
+
 	if(physA && physA->listener != NULL)
 		physA->listener->OnCollision(physA, physB);
 
 	if(physB && physB->listener != NULL)
+		physB->listener->OnCollision(physB, physA);
+}
+
+void ModulePhysics::EndContact(b2Contact* contact)
+{
+	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+	if (physA && physA->listener != NULL)
+		physA->listener->OnCollision(physA, physB);
+
+	if (physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
 }

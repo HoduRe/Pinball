@@ -51,6 +51,11 @@ update_status ModuleSceneIntro::Update()
 		App->player->position.y = METERS_TO_PIXELS(player_circle->body->GetPosition().y) / SCREEN_SIZE - 5;
 	}
 
+	if (cien)
+	{
+		cien = false;
+		score += 100;
+	}
 	// Stage Print
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
@@ -312,10 +317,13 @@ void ModuleSceneIntro::HighStageBlit() {
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
-	CreateFlicker();	// Creates both flickers' hitboxes
-	App->physics->CreateCircle(143, 113, 30, false);	// Orange circle hitbox
+	CreateFlicker();
+	App->physics->CreateCircle(143, 113, 30, false);// Orange circle hitbox
+	scoreSensors.add(App->physics->CreateCircleSensor(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30)); //sensor for the hitbox	
 	App->physics->CreateCircle(122, 79, 30, false);		// Left pink circle hitbox
+	scoreSensors.add(App->physics->CreateCircleSensor(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
 	App->physics->CreateCircle(163, 79, 30, false);		// Right pink circle hitbox
+	scoreSensors.add(App->physics->CreateCircleSensor(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
 	App->physics->CreateRectangle(233, 80, 4, 162, false); // Last right border hitbox
 	App->physics->CreateRectangle(104, 50, 3, 12, false);	// First (from left) palet under the green cards hitbox
 	App->physics->CreateRectangle(120, 50, 3, 12, false);	// Second (from left) palet under the green cards hitbox

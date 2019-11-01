@@ -49,4 +49,9 @@ public:
 	stage_state stage;
 	stage_state buffer_stage;
 	uint bonus_fx;
+	bool cien = false;
+	uint score = 0u;
+
+	//Lists to storage sensors of the elements for the score
+	p2List<PhysBody*> scoreSensors;	
 };
