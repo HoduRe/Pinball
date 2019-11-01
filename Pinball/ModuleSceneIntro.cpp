@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
+#include "ModulePlayer.h"
 #include "ModulePhysics.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -43,24 +44,38 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+
+	// Player position update
+	if (player_circle != NULL) {
+		App->player->position.x = METERS_TO_PIXELS(player_circle->body->GetPosition().x) / SCREEN_SIZE - 5;
+		App->player->position.y = METERS_TO_PIXELS(player_circle->body->GetPosition().y) / SCREEN_SIZE - 5;
+	}
+
 	// Stage Print
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
 		App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25, true);
 	}
+
 	if (stage == ST_TITLE_SCREEN) {
 		TitleBlit();
 	}
 	else if (stage == ST_LOW_STAGE) {
-		if (buffer_stage != ST_LOW_STAGE) {
+		if (buffer_stage == ST_HIGH_STAGE) {
 			App->physics->Disable();
 			App->physics->Enable();
+			ChargeLowStage();
+		}
+		else if(buffer_stage == ST_TITLE_SCREEN){
+			App->physics->Disable();
+			App->physics->Enable();
+			player_circle = App->physics->CreateCircle(App->player->position.x + 4, App->player->position.y, 16, true);	// Creates player
 			ChargeLowStage();
 		}
 		LowStageBlit();
 	}
 	else if (stage == ST_HIGH_STAGE) {
-		if (buffer_stage != ST_HIGH_STAGE) {
+		if (buffer_stage == ST_LOW_STAGE) {
 				App->physics->Disable();
 			App->physics->Enable();
 			ChargeHighStage();
@@ -77,6 +92,15 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 	App->audio->PlayFx(bonus_fx);
 
+}
+
+void ModuleSceneIntro::TitleBlit() {
+	App->renderer->DrawQuad(scene_rect, 25, 25, 25);
+	elements_rect.x = 8;
+	elements_rect.y = 199;
+	elements_rect.w = 192;
+	elements_rect.h = 104;
+	App->renderer->Blit(scene, 24, 24, &elements_rect);
 }
 
 void ModuleSceneIntro::LowStageBlit() {
@@ -287,17 +311,8 @@ void ModuleSceneIntro::HighStageBlit() {
 
 }
 
-void ModuleSceneIntro::TitleBlit() {
-	App->renderer->DrawQuad(scene_rect, 25, 25, 25);
-	elements_rect.x = 8;
-	elements_rect.y = 199;
-	elements_rect.w = 192;
-	elements_rect.h = 104;
-	App->renderer->Blit(scene, 24, 24, &elements_rect);
-}
-
 void ModuleSceneIntro::ChargeLowStage() {
-	CreateFlicker();
+	CreateFlicker();	// Creates both flickers' hitboxes
 	App->physics->CreateCircle(143, 113, 30, false);	// Orange circle hitbox
 	App->physics->CreateCircle(122, 79, 30, false);		// Left pink circle hitbox
 	App->physics->CreateCircle(163, 79, 30, false);		// Right pink circle hitbox
@@ -320,7 +335,11 @@ void ModuleSceneIntro::ChargeLowStage() {
 	App->physics->CreateChain(0, 0, scene1part4, 6, false);	// Pink left triangle
 	int scene1part5[6] = { -11, 173, 0, 166, 0, 144 };
 	App->physics->CreateChain(185, 0, scene1part5, 6, false);	// Pink right triangle
-	
+	int scene6[12] = { 84, 146, 84, 176, 104, 192, 104, 186, 89, 175, 89, 146 };
+	App->physics->CreateChain(-1, -2, scene6, 12, false);		// Left white edge
+	int scene7[12] = { 20, 146, 20, 176, 0, 192, 0, 186, 15, 175, 15, 146 };
+	App->physics->CreateChain(182, -2, scene7, 12, false);		// Right white edge
+
 	/*App->physics->CreateRectangle(225, 204, 21, 87, false);	// Kicker hitbox hitbox
 	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
 	App->physics->CreateRectangle(216, 148, 4, 24, false); // First right border hitbox
@@ -354,12 +373,8 @@ void ModuleSceneIntro::ChargeHighStage() {
 void ModuleSceneIntro::CreateFlicker() {
 	int left_flicker[6] = { 4, 0, 0, 5, 29, 17 };
 	int right_flicker[6] = { 25, 0, 29, 5, 0, 17 };
-	b2Vec2 circle1(102, 193);
-	b2Vec2 circle2(188, 193);
-	App->physics->CreateCircle(107, 193, 5, false);	// Left flicker anchor point
-	App->physics->CreateCircle(180, 193, 5, false);	// Right flicker anchor point
-	App->physics->CreateChain(102, 193, left_flicker, 6, false);	// Left flicker
-	App->physics->CreateChain(156, 193, right_flicker, 6, false);	// Right flicker
-	App->physics->CreateFlicker(circle1);		// Left flicker joint creation
-	App->physics->CreateFlicker(circle2);		// Right flicker joint creation
+	flicker1 = App->physics->CreateChain(102, 193, left_flicker, 6, true);	// Left flicker
+	flicker2 = App->physics->CreateChain(156, 193, right_flicker, 6, true);	// Right flicker
+	revolute_joint_left = App->physics->CreateFlicker(*flicker1, false);		// Left flicker joint creation
+	revolute_joint_right = App->physics->CreateFlicker(*flicker2, true);		// Right flicker joint creation
 }

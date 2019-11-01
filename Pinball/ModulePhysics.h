@@ -45,8 +45,8 @@ public:
 	PhysBody* CreateCircle(int x, int y, int radius, bool dynamic_body);
 	PhysBody* CreateRectangle(int x, int y, int width, int height, bool dynamic_body);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
-	void ModulePhysics::CreateFlicker(b2Vec2 circle_coordinates);
 	PhysBody* CreateChain(int x, int y, int* points, int size, bool dynamic_body);
+	b2RevoluteJoint* ModulePhysics::CreateFlicker(PhysBody flicker, bool flip);
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);

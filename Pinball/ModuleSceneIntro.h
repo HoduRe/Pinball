@@ -4,6 +4,7 @@
 #include "p2Point.h"
 #include "Globals.h"
 #include "SDL/include/SDL.h"
+#include "Box2D/Box2D/Box2D.h"
 
 enum stage_state {
 	ST_UNKNOWN,
@@ -36,6 +37,13 @@ public:
 
 public:
 	SDL_Texture* scene;
+	PhysBody* player_circle;
+	PhysBody* circle1;
+	PhysBody* circle2;
+	PhysBody* flicker1;
+	PhysBody* flicker2;
+	b2RevoluteJoint* revolute_joint_left;
+	b2RevoluteJoint* revolute_joint_right;
 	SDL_Rect scene_rect;
 	SDL_Rect elements_rect;
 	stage_state stage;

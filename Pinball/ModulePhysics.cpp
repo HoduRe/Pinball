@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModulePlayer.h"
 #include "ModuleSceneIntro.h"
 #include "p2Point.h"
 #include "math.h"
@@ -148,27 +149,21 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-void ModulePhysics::CreateFlicker(b2Vec2 circle_coordinates) {
+b2RevoluteJoint* ModulePhysics::CreateFlicker(PhysBody flicker, bool flip) {
 	b2RevoluteJointDef def;
-	b2RevoluteJoint* revolute_joint;
-	b2Body* bodyA = nullptr;
-	b2Body* bodyB = nullptr;
-	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
-	{
-		for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
-		{
-			if (f->GetBody()->GetFixtureList()->GetShape()->TestPoint(f->GetBody()->GetTransform(), circle_coordinates) == true) {
-				bodyA = f->GetBody();
-			}
-			else if (f->GetBody()->GetFixtureList()->GetShape()->TestPoint(f->GetBody()->GetTransform(), circle_coordinates) == true) {
-				bodyB = f->GetBody();
-			}
-			if (bodyA != nullptr && bodyB != nullptr) {
-				def.Initialize(bodyA, bodyB, bodyA->GetWorldCenter());
-				revolute_joint = (b2RevoluteJoint*)world->CreateJoint(&def);
-			}
-		}
-	}
+	b2RevoluteJoint* revolute_joint_aux;
+	b2Vec2 offset(0, 0);
+	if (flip == false) { offset.x = PIXEL_TO_METERS(7); offset.y = 0; }
+	else if(flip == true) { offset.x = PIXEL_TO_METERS(75); offset.y = 0; }
+
+	def.Initialize(ground, flicker.body, flicker.body->GetWorldCenter()+offset);
+	def.enableMotor = true;
+	def.maxMotorTorque = 0.0f;
+	def.motorSpeed = 90.0f * DEGTORAD;
+
+	revolute_joint_aux = (b2RevoluteJoint*)world->CreateJoint(&def);
+
+	return revolute_joint_aux;
 }
 
 PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool dynamic_body)
@@ -212,6 +207,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool d
 // 
 update_status ModulePhysics::PostUpdate()
 {
+	
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 

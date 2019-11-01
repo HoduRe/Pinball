@@ -3,11 +3,16 @@
 #include "Application.h"
 #include "ModulePlayer.h"
 #include "ModuleInput.h"
+#include "ModulePhysics.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	position.x = 220;
+	position.y = 150;
+	left_flicker = false;
+	right_flicker = false;
 }
 
 ModulePlayer::~ModulePlayer()
@@ -18,8 +23,7 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 	player = App->textures->Load("pinball/player.png");
-	position.x = 220;
-	position.y = 107;
+
 	return true;
 }
 
@@ -34,6 +38,7 @@ bool ModulePlayer::CleanUp()
 // Update: draw background
 update_status ModulePlayer::Update()
 {
+
 	if(App->scene_intro->stage != ST_TITLE_SCREEN)
 		App->renderer->Blit(player, position.x, position.y);
 
@@ -56,22 +61,51 @@ update_status ModulePlayer::PreUpdate() {
 	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN && App->scene_intro->stage != ST_HIGH_STAGE) {
 		App->scene_intro->stage = ST_HIGH_STAGE;
 	}
-
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-		position.x--;
-
-	}	// LEFT FLIPPER
-	else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		position.x++;
-
-	}	// RIGHT FLIPPER
-	else if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT) {
-		position.y--;
+	if (App->scene_intro->buffer_stage == ST_TITLE_SCREEN && App->scene_intro->stage == ST_LOW_STAGE) {
+		position.x = 220;
+		position.y = 150;
 	}
-	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
-		position.y++;
-	}	// KICKER
+
+	StateMachine();
+
 	return UPDATE_CONTINUE;
 }
 
+void ModulePlayer::StateMachine() {
+	// Controls
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
+		if (App->scene_intro->flicker1->body->GetAngle() > -45 * DEGTORAD) {
+			App->scene_intro->flicker1->body->SetAngularVelocity(-30);
+			left_flicker = true;
+		}
+		else { App->scene_intro->flicker1->body->SetAngularVelocity(0); }
+	}	// LEFT FLIPPER
+	else { left_flicker = false; }
 
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
+		if (App->scene_intro->flicker2->body->GetAngle() < 45 * DEGTORAD) {
+			App->scene_intro->flicker2->body->SetAngularVelocity(30);
+			right_flicker = true;
+		}
+		else { App->scene_intro->flicker2->body->SetAngularVelocity(0); }
+	}	// RIGHT FLIPPER
+	else { right_flicker = false; }
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
+	}	// KICKER
+
+	if (App->scene_intro->flicker1 != NULL && App->scene_intro->flicker2 != NULL) {
+		if (left_flicker == false) {
+			if (App->scene_intro->flicker1->body->GetAngle() < 0 * DEGTORAD) {
+				App->scene_intro->flicker1->body->SetAngularVelocity(30);
+			}
+			else { App->scene_intro->flicker1->body->SetAngularVelocity(0); }
+		}
+		if (right_flicker == false) {
+			if (App->scene_intro->flicker2->body->GetAngle() > 0 * DEGTORAD) {
+				App->scene_intro->flicker2->body->SetAngularVelocity(-30);
+			}
+			else { App->scene_intro->flicker2->body->SetAngularVelocity(0); }
+		}
+	}
+}

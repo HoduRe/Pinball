@@ -1,5 +1,3 @@
-Make the ball move by physics
-Add edges
 Make edges coordinate with the flippers
 Add UI
 Add points

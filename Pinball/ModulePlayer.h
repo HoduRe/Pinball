@@ -14,7 +14,11 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void StateMachine();
+
 public:
 	iPoint position;
+	bool left_flicker;
+	bool right_flicker;
 	SDL_Texture* player;
 };
