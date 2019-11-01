@@ -32,6 +32,7 @@ public:
 // Charge functions
 	void ChargeLowStage();
 	void ChargeHighStage();
+	void CreateFlicker();
 
 public:
 	SDL_Texture* scene;

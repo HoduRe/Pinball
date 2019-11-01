@@ -297,36 +297,69 @@ void ModuleSceneIntro::TitleBlit() {
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
-	int left_flicker[6] = { 4, 0, 0, 5, 29, 17 };
-	int right_flicker[6] = { 25, 0, 29, 5, 0, 17 };
-	b2Vec2 circle1 (102, 193);
-	b2Vec2 circle2 (188, 193);
-	App->physics->CreateCircle(107, 193, 5, false);	// Left flicker anchor point
-	App->physics->CreateCircle(180, 193, 5, false);	// Right flicker anchor point
-	App->physics->CreateChain(102, 193, left_flicker, 6, false);	// Left flicker
-	App->physics->CreateChain(156, 193, right_flicker, 6, false);	// Right flicker
-	App->physics->CreateFlicker(circle1);		// Left flicker joint creation
-	App->physics->CreateFlicker(circle2);		// Right flicker joint creation
-
+	CreateFlicker();
 	App->physics->CreateCircle(143, 113, 30, false);	// Orange circle hitbox
 	App->physics->CreateCircle(122, 79, 30, false);		// Left pink circle hitbox
 	App->physics->CreateCircle(163, 79, 30, false);		// Right pink circle hitbox
+	App->physics->CreateRectangle(233, 80, 4, 162, false); // Last right border hitbox
 	App->physics->CreateRectangle(104, 50, 3, 12, false);	// First (from left) palet under the green cards hitbox
 	App->physics->CreateRectangle(120, 50, 3, 12, false);	// Second (from left) palet under the green cards hitbox
 	App->physics->CreateRectangle(136, 50, 3, 12, false);	// Third (from left) palet under the green cards hitbox
 	App->physics->CreateRectangle(152, 50, 3, 12, false);	// Fourth (from left) palet under the green cards hitbox
 	App->physics->CreateRectangle(168, 50, 3, 12, false);	// Fifth (from left) palet under the green cards hitbox
 	App->physics->CreateRectangle(184, 50, 3, 12, false);	// Sixth (from left) palet under the green cards hitbox
-	App->physics->CreateRectangle(225, 204, 21, 87, false);	// Kicker hitbox hitbox
+	// Low scene charge
+	int scene1part1[20] = { 71, 0, 71, 22, 79, 44, 79, 114, 87, 121, 72, 136, 72, 195, 118, 242, 67, 242, 67, 0 };
+	App->physics->CreateChain(0, -2, scene1part1, 20, false);	// Left border
+	int scene1part2[30] = { 218, 0, 218, 162, 231, 162, 231, 241, 169, 241, 214, 195, 214, 136, 199, 121, 207, 113,
+	207, 48, 215, 33, 213, 21, 198, 21, 192, 10, 192, 0 };
+	App->physics->CreateChain(0, -2, scene1part2, 30, false);	// Right border
+	int scene1part3[10] = { 84, 0, 84, 18, 87, 25, 94, 25, 94, 0 };
+	App->physics->CreateChain(0, -5, scene1part3, 10, false);	// Left upper object
+	int scene1part4[6] = { 111, 173, 100, 166, 100, 144 };
+	App->physics->CreateChain(0, 0, scene1part4, 6, false);	// Pink left triangle
+	int scene1part5[6] = { -11, 173, 0, 166, 0, 144 };
+	App->physics->CreateChain(185, 0, scene1part5, 6, false);	// Pink right triangle
+	
+	/*App->physics->CreateRectangle(225, 204, 21, 87, false);	// Kicker hitbox hitbox
 	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
 	App->physics->CreateRectangle(216, 148, 4, 24, false); // First right border hitbox
-	App->physics->CreateRectangle(233, 80, 4, 162, false); // Last right border hitbox
+	*/
 }
 
 void ModuleSceneIntro::ChargeHighStage() {
-	App->physics->CreateRectangle(151, 13, 160, 25, false); // Upper border hitbox
+/*	App->physics->CreateRectangle(151, 13, 160, 25, false); // Upper border hitbox
 	App->physics->CreateRectangle(216, 107, 6, 47, false); // Right obstacle border hitbox
 	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
-	App->physics->CreateRectangle(233, 121, 4, 242, false); // Last right border hitbox
+	App->physics->CreateRectangle(233, 121, 4, 242, false); // Last right border hitbox*/
+	CreateFlicker();
+	// High scene scenario
+	App->physics->CreateCircle(146, 101, 30, false);		// Pink circle hitbox
+	int scene1[36] = { 71, 242, 71, 176, 86, 161, 86, 125, 72, 83, 72, 65, 78, 47, 89, 33, 105, 25, 195, 25, 210, 32,
+	223, 46, 231, 65, 231, 240, 236, 240, 236, 0, 66, 0, 66, 242 };
+	App->physics->CreateChain(0, 0, scene1, 36, false);		// Border
+	int scene2[14] = { 84, 241, 84, 186, 91, 179, 102, 191, 102, 201, 94, 208, 94, 241 };
+	App->physics->CreateChain(0, 0, scene2, 14, false);		// Left down object
+	int scene3[18] = { 104, 42, 119, 56, 119, 71, 102, 88, 102, 103, 95, 103, 88, 82, 88, 61, 92, 51 };
+	App->physics->CreateChain(0, 0, scene3, 18, false);		// Left upper object
+	int scene4[58] = { 191, 241, 191, 207, 183, 200, 183, 191, 194, 181, 203, 188, 209, 188, 214, 183, 214, 175,
+	199, 160, 199, 146, 206, 142, 210, 137, 212, 131, 212, 84, 206, 70, 195, 64, 185, 65, 179, 67, 175, 71, 166, 71,
+	166, 56, 182, 41, 193, 41, 203, 45, 208, 50, 213, 59, 217, 72, 217, 241 };
+	App->physics->CreateChain(0, 0, scene4, 58, false);		// Right object
+	int scene5[12] = { 183, 88, 190, 96, 190, 128, 198, 127, 198, 87, 190, 83 };
+	App->physics->CreateChain(0, 0, scene5, 12, false);		// Green object
 
+}
+
+void ModuleSceneIntro::CreateFlicker() {
+	int left_flicker[6] = { 4, 0, 0, 5, 29, 17 };
+	int right_flicker[6] = { 25, 0, 29, 5, 0, 17 };
+	b2Vec2 circle1(102, 193);
+	b2Vec2 circle2(188, 193);
+	App->physics->CreateCircle(107, 193, 5, false);	// Left flicker anchor point
+	App->physics->CreateCircle(180, 193, 5, false);	// Right flicker anchor point
+	App->physics->CreateChain(102, 193, left_flicker, 6, false);	// Left flicker
+	App->physics->CreateChain(156, 193, right_flicker, 6, false);	// Right flicker
+	App->physics->CreateFlicker(circle1);		// Left flicker joint creation
+	App->physics->CreateFlicker(circle2);		// Right flicker joint creation
 }
