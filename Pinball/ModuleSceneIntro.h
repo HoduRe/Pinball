@@ -57,8 +57,28 @@ public:
 	
 	PhysBody* loseSensor;
 
-	int font_name;
 
+	//elements for the pulsator
+	PhysBody* pulsator;
+	b2Vec2 p;
+
+	
+	
+	//FX
+	uint bonus_fx;
+	uint bumper_hit;
+	uint yellowSquare_hit;
+	uint tags_hit;
+	uint numeric_hit;
+	uint card_hit;
+	uint egg_hit;
+	
+	
+	//fonts
+	int font_name;
+	int font2;
+
+	//score related variables
 	char score_text[10];
 	uint score = 0u;
 
@@ -68,9 +88,23 @@ public:
 	char ball_text[10];
 	uint ball = 02;
 
+	uint pulsatorUP = 100u;
+	char pulsatorUP_text[10];
 
-	//Lists to storage sensors of the elements for the score
+	//------SENSORS------//
+			
+	//score sensors
 	p2List<PhysBody*> hundred_scoreSensors;
-	p2List<PhysBody*> fivehundred_scoreSensors;
+	
+	p2List<PhysBody*> bumperSensors;
+	p2List<PhysBody*> yellowSquareSensors;
+	p2List<PhysBody*> tagSensors;
+	p2List<PhysBody*> cardSensors;
+	p2List<PhysBody*> variableSensors;	
+	p2List<PhysBody*> fivehundred_scoreSensors;	
 	p2List<PhysBody*> thousand_scoreSensors;
+	
+	//lose sensors
+	PhysBody* loseSensor;
+
 };

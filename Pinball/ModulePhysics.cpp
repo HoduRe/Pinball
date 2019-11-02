@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
+#include "ModuleAudio.h"
 #include "ModulePlayer.h"
 #include "ModuleSceneIntro.h"
 #include "p2Point.h"
@@ -191,6 +192,7 @@ b2RevoluteJoint* ModulePhysics::CreateFlicker(PhysBody flicker, bool flip) {
 	return revolute_joint_aux;
 }
 
+
 PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool dynamic_body)
 {
 	x = x * SCREEN_SIZE;
@@ -216,6 +218,43 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, bool d
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
+
+	b->CreateFixture(&fixture);
+
+	delete p;
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+	b->SetUserData(pbody);
+	pbody->width = pbody->height = 0;
+
+	return pbody;
+}
+PhysBody* ModulePhysics::CreateChainSensor(int x, int y, int* points, int size)
+{
+	x = x * SCREEN_SIZE;
+	y = y * SCREEN_SIZE;
+
+	b2BodyDef body;
+	body.type = b2_staticBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2ChainShape shape;
+	b2Vec2* p = new b2Vec2[size / 2];
+
+	for (uint i = 0; i < size / 2; ++i)
+	{
+		p[i].x = PIXEL_TO_METERS(points[i * 2 + 0] * SCREEN_SIZE);
+		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1] * SCREEN_SIZE);
+	}
+
+	shape.CreateLoop(p, size / 2);
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.isSensor = true;
 
 	b->CreateFixture(&fixture);
 
@@ -429,10 +468,62 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		}
 	}
 
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->bumperSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	{
+		if (physA == iterator->data)
+		{
+			App->audio->PlayFx(App->scene_intro->bumper_hit);
+			App->scene_intro->ScoreUpdater(100);
+		}
+	}
+
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->yellowSquareSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	{
+		if (physA == iterator->data)
+		{
+			App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
+			App->scene_intro->ScoreUpdater(100);
+		}
+	}
+
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->tagSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	{
+		if (physA == iterator->data)
+		{
+			App->audio->PlayFx(App->scene_intro->tags_hit);
+			App->scene_intro->ScoreUpdater(200);
+		}
+	}
+
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->cardSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	{
+		if (physA == iterator->data)
+		{
+			App->audio->PlayFx(App->scene_intro->card_hit);
+			App->scene_intro->ScoreUpdater(200);
+		}
+	}
+
+	
+		if (physA == App->scene_intro->pulsator)
+		{
+			App->audio->PlayFx(App->scene_intro->card_hit);
+			App->scene_intro->ScoreUpdater(App->scene_intro->pulsatorUP);
+			App->scene_intro->pulsatorUP += 100u;
+
+			if (App->scene_intro->pulsatorUP > 1000u)
+			{
+				App->scene_intro->pulsatorUP = 1000u;
+			}
+			
+		}
+	
+
 	for (p2List_item<PhysBody*>* iterator = App->scene_intro->fivehundred_scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
 	{
 		if (physA == iterator->data)
 		{
+			App->audio->PlayFx(App->scene_intro->numeric_hit);
 			App->scene_intro->ScoreUpdater(500);
 		}
 	}
@@ -441,6 +532,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	{
 		if (physA == iterator->data)
 		{
+			App->audio->PlayFx(App->scene_intro->numeric_hit);
 			App->scene_intro->ScoreUpdater(1000);
 		}
 	}
@@ -449,6 +541,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	{
 		App->scene_intro->ball -= 1u;
 		App->scene_intro->score = 0u;
+		App->scene_intro->pulsatorUP = 100u;
 
 		if (App->scene_intro->ball != 0){
 			App->scene_intro->generate_player = true;

@@ -31,6 +31,14 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	scene = App->textures->Load("pinball/level_elements.png");
 	font_name = App->fonts->Load("pinball/Font.png", "0123456789ABCDEFGHIJKLMNOPQRSTUWYZ+-", 1);
+	font2 = App->fonts->Load("pinball/Font2.png", "0123456789", 1);
+
+	bumper_hit= App->audio->LoadFx("pinball/audio/bumper_hit.wav");
+	yellowSquare_hit = App->audio->LoadFx("pinball/audio/yellowSquare_hit.wav");
+	tags_hit = App->audio->LoadFx("pinball/audio/tags_hit.wav");
+	numeric_hit = App->audio->LoadFx("pinball/audio/numeric_hit.wav");
+	card_hit = App->audio->LoadFx("pinball/audio/card_hit.wav");
+	egg_hit  = App->audio->LoadFx("pinball/audio/egg_hit.wav");
 
 	stage = ST_TITLE_SCREEN;
 
@@ -108,6 +116,8 @@ update_status ModuleSceneIntro::Update()
 		topscore=score;
 	}
 
+	if (stage != ST_TITLE_SCREEN)
+	{
 		//print of the top score
 		sprintf_s(topscore_text, 10, "%7d", topscore);
 		App->fonts->BlitText(5, 40, font_name, topscore_text);
@@ -122,6 +132,7 @@ update_status ModuleSceneIntro::Update()
 		sprintf_s(ball_text, 10, "%7d", ball);
 		App->fonts->BlitText(35, 170, font_name, ball_text);
 		App->fonts->BlitText(20, 155, font_name, "BALL");
+	}
 	
 
 	return UPDATE_CONTINUE;
@@ -449,35 +460,38 @@ void ModuleSceneIntro::HighStageBlit() {
 		scene_rect.h = 18;
 		App->renderer->Blit(scene, 156, 182, &scene_rect); // Right flicker blit
 	}
+	//blit of the pulsator award
+	sprintf_s(pulsatorUP_text, 10, "%7d", pulsatorUP);
+	App->fonts->BlitText(95, 64, font2, pulsatorUP_text);
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
 	CreateFlicker();
 	App->physics->CreateCircle(143, 113, 30, false);// Orange circle hitbox
-	hundred_scoreSensors.add(App->physics->CreateCircleSensor(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	bumperSensors.add(App->physics->CreateCircleSensor(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30)); //sensor for the hitbox	
 	
 	App->physics->CreateCircle(122, 79, 30, false);		// Left pink circle hitbox
-	hundred_scoreSensors.add(App->physics->CreateCircleSensor(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	bumperSensors.add(App->physics->CreateCircleSensor(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
 	
 	App->physics->CreateCircle(163, 79, 30, false);		// Right pink circle hitbox
-	hundred_scoreSensors.add(App->physics->CreateCircleSensor(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	bumperSensors.add(App->physics->CreateCircleSensor(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
 	
 	App->physics->CreateRectangle(233, 80, 4, 162, false); // Last right border hitbox
 		
 	App->physics->CreateRectangle(104, 50, 3, 12, false);	// First (from left) palet under the green cards hitbox
-	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(111, 32, 14, 24)); //sensor for the first green card
+	cardSensors.add(App->physics->CreateRectangleSensor(111, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(120, 50, 3, 12, false);	// Second (from left) palet under the green cards hitbox
-	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(127, 32, 14, 24)); //sensor for the first green card
+	cardSensors.add(App->physics->CreateRectangleSensor(127, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(136, 50, 3, 12, false);	// Third (from left) palet under the green cards hitbox
-	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(143, 32, 14, 24)); //sensor for the first green card
+	cardSensors.add(App->physics->CreateRectangleSensor(143, 45, 4, 2)); //sensor for the first green card
 	
 	App->physics->CreateRectangle(152, 50, 3, 12, false);	// Fourth (from left) palet under the green cards hitbox
-	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(159, 32, 14, 24)); //sensor for the first green card
+	cardSensors.add(App->physics->CreateRectangleSensor(159, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(168, 50, 3, 12, false);	// Fifth (from left) palet under the green cards hitbox
-	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(175, 32, 14, 24)); //sensor for the first green card
+	cardSensors.add(App->physics->CreateRectangleSensor(175, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(184, 50, 3, 12, false);	// Sixth (from left) palet under the green cards hitbox
 	// Low scene charge
@@ -497,10 +511,21 @@ void ModuleSceneIntro::ChargeLowStage() {
 	int scene7[12] = { 20, 146, 20, 176, 0, 192, 0, 186, 15, 175, 15, 146 };
 	App->physics->CreateChain(182, -2, scene7, 12, false);		// Right white edge
 
+	//Tags 1 to 7 sensors
+	tagSensors.add(App->physics->CreateRectangleSensor(81,106,2,7));
+	tagSensors.add(App->physics->CreateRectangleSensor(81, 98, 2, 7));
+	tagSensors.add(App->physics->CreateRectangleSensor(81, 90, 2, 7));
+	tagSensors.add(App->physics->CreateRectangleSensor(81, 82, 2, 7));
+	tagSensors.add(App->physics->CreateRectangleSensor(81, 74, 2, 7));
+	tagSensors.add(App->physics->CreateRectangleSensor(81, 66, 2, 7));
+	tagSensors.add(App->physics->CreateRectangleSensor(81, 58, 2, 7));
+
 	/*App->physics->CreateRectangle(225, 204, 21, 87, false);	// Kicker hitbox hitbox
 	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
 	App->physics->CreateRectangle(216, 148, 4, 24, false); // First right border hitbox
 	*/
+
+	
 
 	loseSensor = App->physics->CreateRectangleSensor(143, SCREEN_HEIGHT, 48, 5);
 }
@@ -512,8 +537,9 @@ void ModuleSceneIntro::ChargeHighStage() {
 	App->physics->CreateRectangle(233, 121, 4, 242, false); // Last right border hitbox*/
 	CreateFlicker();
 	// High scene scenario
+
 	App->physics->CreateCircle(146, 101, 30, false);		// Pink circle hitbox
-	hundred_scoreSensors.add(App->physics->CreateCircleSensor(146 * SCREEN_SIZE, 101 * SCREEN_SIZE, 30)); //((we send the position of the sensor, and the score
+	bumperSensors.add(App->physics->CreateCircleSensor(146 * SCREEN_SIZE, 101 * SCREEN_SIZE, 30)); //((we send the position of the sensor, and the score
 
 	int scene1[36] = { 71, 242, 71, 176, 86, 161, 86, 125, 72, 83, 72, 65, 78, 47, 89, 33, 105, 25, 195, 25, 210, 32,
 	223, 46, 231, 65, 231, 240, 236, 240, 236, 0, 66, 0, 66, 242 };
@@ -526,8 +552,39 @@ void ModuleSceneIntro::ChargeHighStage() {
 	199, 160, 199, 146, 206, 142, 210, 137, 212, 131, 212, 84, 206, 70, 195, 64, 185, 65, 179, 67, 175, 71, 166, 71,
 	166, 56, 182, 41, 193, 41, 203, 45, 208, 50, 213, 59, 217, 72, 217, 241 };
 	App->physics->CreateChain(0, 0, scene4, 58, false);		// Right object
+	
 	int scene5[12] = { 183, 88, 190, 96, 190, 128, 198, 127, 198, 87, 190, 83 };
 	App->physics->CreateChain(0, 0, scene5, 12, false);		// Green object
+	hundred_scoreSensors.add(App->physics->CreateChainSensor(0, 0, scene5, 12));
+
+	//sensors for the lights (yellow dots in upper left screen)
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(90, 107, 4, 4));
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(85, 99, 4, 4));
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(80, 90, 4, 4));
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(78, 79, 4, 4));
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(78, 69, 4, 4));
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(80, 59, 4, 4));
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(85, 50, 4, 4));
+	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(90, 41, 4, 4));
+
+	//sensors for table numbers: 500,1000,...
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(206, 98, 3, 4));
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(126, 62, 8, 2));
+	thousand_scoreSensors.add(App->physics->CreateRectangleSensor(143, 62, 8, 2));
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(160, 62, 8, 2));
+
+	//sensors for the yellow squares in the left
+	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89,131, 2, 7));
+	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89, 139, 2, 7));
+	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89, 148, 2, 7));
+	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89, 156, 2, 7));
+
+	//Yellow pulsator sensor
+	p.x = 6.65;
+	p.y = 5;
+	pulsator= App->physics->CreateRectangleSensor(107, 80, 10, 2);
+	pulsator->body->SetTransform(p, 15); //rotate the rectangle
+	
 
 }
 
