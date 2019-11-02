@@ -546,6 +546,11 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		if (App->scene_intro->ball != 0){
 			App->scene_intro->generate_player = true;
 		}
+		else {
+			App->scene_intro->stage = ST_TITLE_SCREEN;
+			App->scene_intro->ball = 02;
+			App->scene_intro->score = 00;
+		}
 	}
 
 	if(physA && physA->listener != NULL)

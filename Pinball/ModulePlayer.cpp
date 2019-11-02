@@ -9,8 +9,6 @@
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	position.x = 220;
-	position.y = 150;
 	left_flicker = false;
 	right_flicker = false;
 	kicker_timer = 0;

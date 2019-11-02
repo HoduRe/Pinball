@@ -83,7 +83,7 @@ update_status ModuleSceneIntro::Update()
 			App->physics->MouseJointDestroy();
 			App->physics->Disable();
 			App->physics->Enable();
-			CreatePlayer(App->player->position.x, App->player->position.y);
+			CreatePlayer(220, 150);
 			ChargeLowStage();
 		}
 		else if (buffer_stage == ST_HIGH_STAGE) {
@@ -91,7 +91,10 @@ update_status ModuleSceneIntro::Update()
 			App->physics->MouseJointDestroy();
 			App->physics->Disable();
 			App->physics->Enable();
-			CreatePlayer(81, 12);
+			if (aux_position.x > 84 && aux_position.x < 95) {	// Weird bug fix (when changing map, gets stuck inside a collider)
+				CreatePlayer(96, 12);
+			}
+			else{ CreatePlayer(aux_position.x + 1, 12); }
 			ChargeLowStage();
 		}
 		LowStageBlit();
@@ -147,7 +150,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 }
 
 void ModuleSceneIntro::TitleBlit() {
-	App->renderer->DrawQuad(scene_rect, 25, 25, 25);
 	elements_rect.x = 8;
 	elements_rect.y = 199;
 	elements_rect.w = 192;
@@ -466,7 +468,9 @@ void ModuleSceneIntro::HighStageBlit() {
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
+
 	CreateFlicker();
+
 	App->physics->CreateCircle(143, 113, 30, false);// Orange circle hitbox
 	bumperSensors.add(App->physics->CreateCircleSensor(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30)); //sensor for the hitbox	
 	
@@ -520,26 +524,20 @@ void ModuleSceneIntro::ChargeLowStage() {
 	tagSensors.add(App->physics->CreateRectangleSensor(81, 66, 2, 7));
 	tagSensors.add(App->physics->CreateRectangleSensor(81, 58, 2, 7));
 
-	/*App->physics->CreateRectangle(225, 204, 21, 87, false);	// Kicker hitbox hitbox
-	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
-	App->physics->CreateRectangle(216, 148, 4, 24, false); // First right border hitbox
-	*/
-
-	
-
 	loseSensor = App->physics->CreateRectangleSensor(143, SCREEN_HEIGHT, 48, 5);
 }
 
 void ModuleSceneIntro::ChargeHighStage() {
-/*	App->physics->CreateRectangle(151, 13, 160, 25, false); // Upper border hitbox
-	App->physics->CreateRectangle(216, 107, 6, 47, false); // Right obstacle border hitbox
-	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
-	App->physics->CreateRectangle(233, 121, 4, 242, false); // Last right border hitbox*/
-	CreateFlicker();
-	// High scene scenario
 
+	CreateFlicker();
+
+	// High scene scenario
 	App->physics->CreateCircle(146, 101, 30, false);		// Pink circle hitbox
 	bumperSensors.add(App->physics->CreateCircleSensor(146 * SCREEN_SIZE, 101 * SCREEN_SIZE, 30)); //((we send the position of the sensor, and the score
+
+	App->physics->CreateRectangle(136, 62, 3, 12, false);	// First (from left) palet under the scores
+	App->physics->CreateRectangle(152, 62, 3, 12, false);	// Second (from left) palet under the scores
+
 
 	int scene1[36] = { 71, 242, 71, 176, 86, 161, 86, 125, 72, 83, 72, 65, 78, 47, 89, 33, 105, 25, 195, 25, 210, 32,
 	223, 46, 231, 65, 231, 240, 236, 240, 236, 0, 66, 0, 66, 242 };
