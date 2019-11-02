@@ -13,6 +13,7 @@ ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, s
 	position.y = 150;
 	left_flicker = false;
 	right_flicker = false;
+	kicker_timer = 0;
 }
 
 ModulePlayer::~ModulePlayer()
@@ -61,10 +62,6 @@ update_status ModulePlayer::PreUpdate() {
 	if (App->input->GetKey(SDL_SCANCODE_J) == KEY_DOWN && App->scene_intro->stage != ST_HIGH_STAGE) {
 		App->scene_intro->stage = ST_HIGH_STAGE;
 	}
-	if (App->scene_intro->buffer_stage == ST_TITLE_SCREEN && App->scene_intro->stage == ST_LOW_STAGE) {
-		position.x = 220;
-		position.y = 150;
-	}
 
 	StateMachine();
 
@@ -73,6 +70,19 @@ update_status ModulePlayer::PreUpdate() {
 
 void ModulePlayer::StateMachine() {
 	// Controls
+	if (App->scene_intro->player_circle != NULL) {
+		speed = App->scene_intro->player_circle->body->GetLinearVelocity();
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) { kicker_timer++; }
+		else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP && speed.y == 0) {
+			b2Vec2 kicker;
+			kicker.y = -300;
+			App->scene_intro->player_circle->body->ApplyForce(kicker, App->scene_intro->player_circle->body->GetWorldCenter(), true);
+			kicker_timer = 0;
+		} // Kicker
+		if (App->scene_intro->buffer_stage == ST_LOW_STAGE && App->scene_intro->stage == ST_HIGH_STAGE) {
+		}
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		if (App->scene_intro->flicker1->body->GetAngle() > -45 * DEGTORAD) {
 			App->scene_intro->flicker1->body->SetAngularVelocity(-30);

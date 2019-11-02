@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include "p2Point.h"
+#include "Box2D/Box2D/Box2D.h"
 
 class ModulePlayer : public Module
 {
@@ -17,6 +18,8 @@ public:
 	void StateMachine();
 
 public:
+	int kicker_timer;
+	b2Vec2 speed;
 	iPoint position;
 	bool left_flicker;
 	bool right_flicker;

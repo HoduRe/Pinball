@@ -49,6 +49,10 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	if (generate_player == true) {
+		CreatePlayer(220, 150);
+		generate_player = false;
+	}
 
 	// Player position update
 	if (player_circle != NULL) {
@@ -60,30 +64,40 @@ update_status ModuleSceneIntro::Update()
 	// Stage Print
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25, true);
+		App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 15, true);
 	}
 
 	if (stage == ST_TITLE_SCREEN) {
 		TitleBlit();
 	}
 	else if (stage == ST_LOW_STAGE) {
-		if (buffer_stage == ST_HIGH_STAGE) {
+		if(buffer_stage == ST_TITLE_SCREEN){
+			App->physics->MouseJointDestroy();
 			App->physics->Disable();
 			App->physics->Enable();
+			CreatePlayer(App->player->position.x, App->player->position.y);
 			ChargeLowStage();
 		}
-		else if(buffer_stage == ST_TITLE_SCREEN){
+		else if (buffer_stage == ST_HIGH_STAGE) {
+			iPoint aux_position = App->player->position;
+			App->physics->MouseJointDestroy();
 			App->physics->Disable();
 			App->physics->Enable();
-			player_circle = App->physics->CreateCircle(App->player->position.x + 4, App->player->position.y, 16, true);	// Creates player
+			CreatePlayer(81, 12);
 			ChargeLowStage();
 		}
 		LowStageBlit();
 	}
 	else if (stage == ST_HIGH_STAGE) {
 		if (buffer_stage == ST_LOW_STAGE) {
-				App->physics->Disable();
+			iPoint aux_position = App->player->position;
+			App->physics->MouseJointDestroy();
+			App->physics->Disable();
 			App->physics->Enable();
+			CreatePlayer(aux_position.x, 230);
+			b2Vec2 kicker;
+			kicker.y = -300;
+			App->scene_intro->player_circle->body->ApplyForce(kicker, App->scene_intro->player_circle->body->GetWorldCenter(), true);
 			ChargeHighStage();
 		}
 		HighStageBlit();
@@ -136,6 +150,12 @@ void ModuleSceneIntro::LowStageBlit() {
 	scene_rect.w = SCREEN_WIDTH;
 	scene_rect.h = SCREEN_HEIGHT;
 	App->renderer->Blit(scene, 0, 0, &scene_rect);
+	scene_rect.x = 117;	// Kicker blit
+	scene_rect.y = 316 - (App->player->kicker_timer / 5);
+	if (scene_rect.y <= 303) { scene_rect.y = 303; }
+	scene_rect.w = 10;
+	scene_rect.h = 44;
+	App->renderer->Blit(scene, 218, 164, &scene_rect);
 	scene_rect.x = 61;	// Orange circle blit
 	scene_rect.y = 45;
 	scene_rect.w = 22;
@@ -237,8 +257,48 @@ void ModuleSceneIntro::LowStageBlit() {
 	scene_rect.w = 19;
 	scene_rect.h = 11;
 	App->renderer->Blit(scene, 34, 169, &scene_rect); //ball num blit
-
-
+	if (flicker1->body->GetAngle() >= 0) {
+		scene_rect.x = 31;
+		scene_rect.y = 107;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 102, 193, &scene_rect); // Left flicker blit
+	}
+	else if (flicker1->body->GetAngle() > -45 * DEGTORAD) {
+		scene_rect.x = 30;
+		scene_rect.y = 131;
+		scene_rect.w = 32;
+		scene_rect.h = 10;
+		App->renderer->Blit(scene, 102, 193, &scene_rect); // Left flicker blit
+	}
+	else if (flicker1->body->GetAngle() <= -45 * DEGTORAD) {
+		scene_rect.x = 31;
+		scene_rect.y = 150;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 102, 180, &scene_rect); // Left flicker blit
+	}
+	if (flicker2->body->GetAngle() <= 0) {
+		scene_rect.x = 64;
+		scene_rect.y = 308;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 156, 193, &scene_rect); // Right flicker blit
+	}
+	else if (flicker2->body->GetAngle() < 45 * DEGTORAD) {
+		scene_rect.x = 62;
+		scene_rect.y = 332;
+		scene_rect.w = 32;
+		scene_rect.h = 10;
+		App->renderer->Blit(scene, 156, 193, &scene_rect); // Right flicker blit
+	}
+	else if (flicker2->body->GetAngle() >= 45 * DEGTORAD) {
+		scene_rect.x = 64;
+		scene_rect.y = 351;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 156, 182, &scene_rect); // Right flicker blit
+	}
 }
 
 void ModuleSceneIntro::HighStageBlit() {
@@ -347,7 +407,48 @@ void ModuleSceneIntro::HighStageBlit() {
 	scene_rect.w = 12;
 	scene_rect.h = 14;
 	App->renderer->Blit(scene, 155, 146, &scene_rect);
-
+	if (flicker1->body->GetAngle() >= 0) {
+		scene_rect.x = 31;
+		scene_rect.y = 107;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 102, 193, &scene_rect); // Left flicker blit
+	}
+	else if (flicker1->body->GetAngle() > -45 * DEGTORAD) {
+		scene_rect.x = 30;
+		scene_rect.y = 131;
+		scene_rect.w = 32;
+		scene_rect.h = 10;
+		App->renderer->Blit(scene, 102, 193, &scene_rect); // Left flicker blit
+	}
+	else if (flicker1->body->GetAngle() <= -45 * DEGTORAD) {
+		scene_rect.x = 31;
+		scene_rect.y = 150;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 102, 180, &scene_rect); // Left flicker blit
+	}
+	if (flicker2->body->GetAngle() <= 0) {
+		scene_rect.x = 64;
+		scene_rect.y = 308;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 156, 193, &scene_rect); // Right flicker blit
+	}
+	else if (flicker2->body->GetAngle() < 45 * DEGTORAD) {
+		scene_rect.x = 62;
+		scene_rect.y = 332;
+		scene_rect.w = 32;
+		scene_rect.h = 10;
+		App->renderer->Blit(scene, 156, 193, &scene_rect); // Right flicker blit
+	}
+	else if (flicker2->body->GetAngle() >= 45 * DEGTORAD) {
+		scene_rect.x = 64;
+		scene_rect.y = 351;
+		scene_rect.w = 29;
+		scene_rect.h = 18;
+		App->renderer->Blit(scene, 156, 182, &scene_rect); // Right flicker blit
+	}
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
@@ -383,7 +484,7 @@ void ModuleSceneIntro::ChargeLowStage() {
 	int scene1part1[20] = { 71, 0, 71, 22, 79, 44, 79, 114, 87, 121, 72, 136, 72, 195, 118, 242, 67, 242, 67, 0 };
 	App->physics->CreateChain(0, -2, scene1part1, 20, false);	// Left border
 	int scene1part2[30] = { 218, 0, 218, 162, 231, 162, 231, 241, 169, 241, 214, 195, 214, 136, 199, 121, 207, 113,
-	207, 48, 215, 33, 213, 21, 198, 21, 192, 10, 192, 0 };
+	207, 48, 215, 33, 213, 21, 198, 21, 191, 10, 191, 0 };
 	App->physics->CreateChain(0, -2, scene1part2, 30, false);	// Right border
 	int scene1part3[10] = { 84, 0, 84, 18, 87, 25, 94, 25, 94, 0 };
 	App->physics->CreateChain(0, -5, scene1part3, 10, false);	// Left upper object
@@ -431,10 +532,10 @@ void ModuleSceneIntro::ChargeHighStage() {
 }
 
 void ModuleSceneIntro::CreateFlicker() {
-	int left_flicker[6] = { 4, 0, 0, 5, 29, 17 };
-	int right_flicker[6] = { 25, 0, 29, 5, 0, 17 };
-	flicker1 = App->physics->CreateChain(102, 193, left_flicker, 6, true);	// Left flicker
-	flicker2 = App->physics->CreateChain(156, 193, right_flicker, 6, true);	// Right flicker
+	int left_flicker[8] = { 3, 0, 0, 5, 24, 18, 29, 13 };
+	int right_flicker[8] = { 26, 0, 29, 5, 5, 18, 0, 13 };
+	flicker1 = App->physics->CreateChain(102, 193, left_flicker, 8, true);	// Left flicker
+	flicker2 = App->physics->CreateChain(156, 193, right_flicker, 8, true);	// Right flicker
 	revolute_joint_left = App->physics->CreateFlicker(*flicker1, false);		// Left flicker joint creation
 	revolute_joint_right = App->physics->CreateFlicker(*flicker2, true);		// Right flicker joint creation
 }
@@ -442,4 +543,9 @@ void ModuleSceneIntro::CreateFlicker() {
 void ModuleSceneIntro::ScoreUpdater(uint s)
 {
 	score += s;
+}
+
+void ModuleSceneIntro::CreatePlayer(float x, float y)
+{
+	player_circle = App->physics->CreateCircle(x, y, 16, true);	// Creates player
 }

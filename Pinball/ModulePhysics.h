@@ -47,11 +47,12 @@ public:
 	PhysBody* CreateRectangle(int x, int y, int width, int height, bool dynamic_body);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, int* points, int size, bool dynamic_body);
-	b2RevoluteJoint* ModulePhysics::CreateFlicker(PhysBody flicker, bool flip);
+	b2RevoluteJoint* CreateFlicker(PhysBody flicker, bool flip);
+	void MouseJointDestroy();
 
 	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
-	void ModulePhysics::EndContact(b2Contact* contact);
+	void EndContact(b2Contact* contact);
 
 private:
 

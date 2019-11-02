@@ -64,7 +64,7 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic_bod
 	x = x * SCREEN_SIZE;
 	y = y * SCREEN_SIZE;
 	b2BodyDef body;
-	if (dynamic_body == true) { body.type = b2_dynamicBody; }
+	if (dynamic_body == true) { body.type = b2_dynamicBody;}
 	else if (dynamic_body == false) { body.type = b2_staticBody; }
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
@@ -75,6 +75,7 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool dynamic_bod
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
+	if (body.type == b2_dynamicBody) { fixture.friction = 0.0f; }
 
 	b->CreateFixture(&fixture);
 
@@ -310,8 +311,8 @@ update_status ModulePhysics::PostUpdate()
 			}
 			// Creates the mouse joint if the mouse's left button is pressed
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN) {
-				b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));
-				if (f->GetBody()->GetFixtureList()->GetShape()->TestPoint(f->GetBody()->GetTransform(), mouse_position) == true) {
+				b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()) * SCREEN_SIZE, PIXEL_TO_METERS(App->input->GetMouseY()) * SCREEN_SIZE);
+				if (App->scene_intro->player_circle->body->GetFixtureList()->GetShape()->TestPoint(App->scene_intro->player_circle->body->GetTransform(), mouse_position) == true) {
 					b2MouseJointDef def;
 					def.bodyA = ground;
 					def.bodyB = f->GetBody();
@@ -327,13 +328,13 @@ update_status ModulePhysics::PostUpdate()
 
 	// Draws and updates the mouse joint as long as the mouse button is kept pressed
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && mouse_joint != NULL && mouse_joint->IsActive() == true) {
-		b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));
+		b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()) * SCREEN_SIZE, PIXEL_TO_METERS(App->input->GetMouseY()) * SCREEN_SIZE);
 		App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), METERS_TO_PIXELS(mouse_position.x), METERS_TO_PIXELS(mouse_position.y), 255, 255, 0);
 		mouse_joint->SetTarget(mouse_position);
 	}
 
 	// Deletes mouse joint if mouse button is released
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != NULL && mouse_joint->IsActive() == true) {
+	if ((App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != NULL && mouse_joint->IsActive() == true)) {
 		world->DestroyJoint(mouse_joint);
 		mouse_joint = NULL;
 	}
@@ -448,6 +449,10 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	{
 		App->scene_intro->ball -= 1u;
 		App->scene_intro->score = 0u;
+
+		if (App->scene_intro->ball != 0){
+			App->scene_intro->generate_player = true;
+		}
 	}
 
 	if(physA && physA->listener != NULL)
@@ -467,4 +472,11 @@ void ModulePhysics::EndContact(b2Contact* contact)
 
 	if (physB && physB->listener != NULL)
 		physB->listener->OnCollision(physB, physA);
+}
+
+void ModulePhysics::MouseJointDestroy() {	// This prevents crash when mouse joint exists and map is changed
+	if (mouse_joint != NULL) {
+		world->DestroyJoint(mouse_joint);
+		mouse_joint = NULL;
+	}
 }

@@ -34,6 +34,7 @@ public:
 	void ChargeLowStage();
 	void ChargeHighStage();
 	void CreateFlicker();
+	void CreatePlayer(float x, float y);
 //Score update
 	void ScoreUpdater(uint s);
 
@@ -51,6 +52,7 @@ public:
 	stage_state stage;
 	stage_state buffer_stage;
 	uint bonus_fx;
+	bool generate_player = false;
 	
 	
 	PhysBody* loseSensor;
