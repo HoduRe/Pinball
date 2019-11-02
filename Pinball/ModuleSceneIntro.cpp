@@ -7,6 +7,10 @@
 #include "ModuleAudio.h"
 #include "ModulePlayer.h"
 #include "ModulePhysics.h"
+#include "ModuleFonts.h"
+
+
+#include <stdio.h>//for the sprintf_s function
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -26,6 +30,7 @@ bool ModuleSceneIntro::Start()
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	scene = App->textures->Load("pinball/level_elements.png");
+	font_name = App->fonts->Load("pinball/Font.png", "0123456789ABCDEFGHIJKLMNOPQRSTUWYZ+-", 1);
 
 	stage = ST_TITLE_SCREEN;
 
@@ -51,11 +56,7 @@ update_status ModuleSceneIntro::Update()
 		App->player->position.y = METERS_TO_PIXELS(player_circle->body->GetPosition().y) / SCREEN_SIZE - 5;
 	}
 
-	if (cien)
-	{
-		cien = false;
-		score += 100;
-	}
+	
 	// Stage Print
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
@@ -86,7 +87,28 @@ update_status ModuleSceneIntro::Update()
 			ChargeHighStage();
 		}
 		HighStageBlit();
+	}	
+
+	if (score > topscore)
+	{
+		topscore=score;
 	}
+
+		//print of the top score
+		sprintf_s(topscore_text, 10, "%7d", topscore);
+		App->fonts->BlitText(5, 40, font_name, topscore_text);
+		App->fonts->BlitText(20, 25, font_name, "TOP");
+
+		//print of the current score
+		sprintf_s(score_text, 10, "%7d", score);
+		App->fonts->BlitText(5, 80, font_name, score_text);
+		App->fonts->BlitText(20, 65, font_name, "1UP");
+
+		//print of the number of balls
+		sprintf_s(ball_text, 10, "%7d", ball);
+		App->fonts->BlitText(35, 170, font_name, ball_text);
+		App->fonts->BlitText(20, 155, font_name, "BALL");
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -204,6 +226,18 @@ void ModuleSceneIntro::LowStageBlit() {
 	scene_rect.w = 9;
 	scene_rect.h = 13;
 	App->renderer->Blit(scene, 155, 149, &scene_rect);
+	scene_rect.x = 1;	
+	scene_rect.y = 304;
+	scene_rect.w = 51;
+	scene_rect.h = 11;
+	App->renderer->Blit(scene, 4, 39, &scene_rect); // topScore box blit
+	App->renderer->Blit(scene, 4, 79, &scene_rect); // Score box blit
+	scene_rect.x = 1;
+	scene_rect.y = 316;
+	scene_rect.w = 19;
+	scene_rect.h = 11;
+	App->renderer->Blit(scene, 34, 169, &scene_rect); //ball num blit
+
 
 }
 
@@ -319,17 +353,31 @@ void ModuleSceneIntro::HighStageBlit() {
 void ModuleSceneIntro::ChargeLowStage() {
 	CreateFlicker();
 	App->physics->CreateCircle(143, 113, 30, false);// Orange circle hitbox
-	scoreSensors.add(App->physics->CreateCircleSensor(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	hundred_scoreSensors.add(App->physics->CreateCircleSensor(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	
 	App->physics->CreateCircle(122, 79, 30, false);		// Left pink circle hitbox
-	scoreSensors.add(App->physics->CreateCircleSensor(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	hundred_scoreSensors.add(App->physics->CreateCircleSensor(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	
 	App->physics->CreateCircle(163, 79, 30, false);		// Right pink circle hitbox
-	scoreSensors.add(App->physics->CreateCircleSensor(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	hundred_scoreSensors.add(App->physics->CreateCircleSensor(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
+	
 	App->physics->CreateRectangle(233, 80, 4, 162, false); // Last right border hitbox
+		
 	App->physics->CreateRectangle(104, 50, 3, 12, false);	// First (from left) palet under the green cards hitbox
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(111, 32, 14, 24)); //sensor for the first green card
+
 	App->physics->CreateRectangle(120, 50, 3, 12, false);	// Second (from left) palet under the green cards hitbox
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(127, 32, 14, 24)); //sensor for the first green card
+
 	App->physics->CreateRectangle(136, 50, 3, 12, false);	// Third (from left) palet under the green cards hitbox
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(143, 32, 14, 24)); //sensor for the first green card
+	
 	App->physics->CreateRectangle(152, 50, 3, 12, false);	// Fourth (from left) palet under the green cards hitbox
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(159, 32, 14, 24)); //sensor for the first green card
+
 	App->physics->CreateRectangle(168, 50, 3, 12, false);	// Fifth (from left) palet under the green cards hitbox
+	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(175, 32, 14, 24)); //sensor for the first green card
+
 	App->physics->CreateRectangle(184, 50, 3, 12, false);	// Sixth (from left) palet under the green cards hitbox
 	// Low scene charge
 	int scene1part1[20] = { 71, 0, 71, 22, 79, 44, 79, 114, 87, 121, 72, 136, 72, 195, 118, 242, 67, 242, 67, 0 };
@@ -352,6 +400,8 @@ void ModuleSceneIntro::ChargeLowStage() {
 	App->physics->CreateRectangle(69, 121, 4, 242, false); // Left border hitbox
 	App->physics->CreateRectangle(216, 148, 4, 24, false); // First right border hitbox
 	*/
+
+	loseSensor = App->physics->CreateRectangleSensor(143, SCREEN_HEIGHT, 48, 5);
 }
 
 void ModuleSceneIntro::ChargeHighStage() {
@@ -362,6 +412,8 @@ void ModuleSceneIntro::ChargeHighStage() {
 	CreateFlicker();
 	// High scene scenario
 	App->physics->CreateCircle(146, 101, 30, false);		// Pink circle hitbox
+	hundred_scoreSensors.add(App->physics->CreateCircleSensor(146 * SCREEN_SIZE, 101 * SCREEN_SIZE, 30)); //((we send the position of the sensor, and the score
+
 	int scene1[36] = { 71, 242, 71, 176, 86, 161, 86, 125, 72, 83, 72, 65, 78, 47, 89, 33, 105, 25, 195, 25, 210, 32,
 	223, 46, 231, 65, 231, 240, 236, 240, 236, 0, 66, 0, 66, 242 };
 	App->physics->CreateChain(0, 0, scene1, 36, false);		// Border
@@ -385,4 +437,9 @@ void ModuleSceneIntro::CreateFlicker() {
 	flicker2 = App->physics->CreateChain(156, 193, right_flicker, 6, true);	// Right flicker
 	revolute_joint_left = App->physics->CreateFlicker(*flicker1, false);		// Left flicker joint creation
 	revolute_joint_right = App->physics->CreateFlicker(*flicker2, true);		// Right flicker joint creation
+}
+
+void ModuleSceneIntro::ScoreUpdater(uint s)
+{
+	score += s;
 }

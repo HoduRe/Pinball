@@ -420,12 +420,34 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
 
-	for (p2List_item<PhysBody*>* iterator = App->scene_intro->scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->hundred_scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
 	{
 		if (physA == iterator->data)
 		{
-			App->scene_intro->cien = true;
+			App->scene_intro->ScoreUpdater(100);
 		}
+	}
+
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->fivehundred_scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	{
+		if (physA == iterator->data)
+		{
+			App->scene_intro->ScoreUpdater(500);
+		}
+	}
+
+	for (p2List_item<PhysBody*>* iterator = App->scene_intro->thousand_scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	{
+		if (physA == iterator->data)
+		{
+			App->scene_intro->ScoreUpdater(1000);
+		}
+	}
+
+	if (physA == App->scene_intro->loseSensor)
+	{
+		App->scene_intro->ball -= 1u;
+		App->scene_intro->score = 0u;
 	}
 
 	if(physA && physA->listener != NULL)

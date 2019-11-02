@@ -34,6 +34,8 @@ public:
 	void ChargeLowStage();
 	void ChargeHighStage();
 	void CreateFlicker();
+//Score update
+	void ScoreUpdater(uint s);
 
 public:
 	SDL_Texture* scene;
@@ -49,9 +51,24 @@ public:
 	stage_state stage;
 	stage_state buffer_stage;
 	uint bonus_fx;
-	bool cien = false;
+	
+	
+	PhysBody* loseSensor;
+
+	int font_name;
+
+	char score_text[10];
 	uint score = 0u;
 
+	char topscore_text[10];
+	uint topscore = 0u;
+
+	char ball_text[10];
+	uint ball = 02;
+
+
 	//Lists to storage sensors of the elements for the score
-	p2List<PhysBody*> scoreSensors;	
+	p2List<PhysBody*> hundred_scoreSensors;
+	p2List<PhysBody*> fivehundred_scoreSensors;
+	p2List<PhysBody*> thousand_scoreSensors;
 };
