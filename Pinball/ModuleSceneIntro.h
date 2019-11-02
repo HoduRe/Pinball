@@ -51,7 +51,6 @@ public:
 	SDL_Rect elements_rect;
 	stage_state stage;
 	stage_state buffer_stage;
-	uint bonus_fx;
 	bool generate_player = false;
 	
 	
@@ -104,7 +103,4 @@ public:
 	p2List<PhysBody*> fivehundred_scoreSensors;	
 	p2List<PhysBody*> thousand_scoreSensors;
 	
-	//lose sensors
-	PhysBody* loseSensor;
-
 };
