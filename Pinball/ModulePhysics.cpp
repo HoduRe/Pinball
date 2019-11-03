@@ -351,7 +351,7 @@ update_status ModulePhysics::PostUpdate()
 			// Creates the mouse joint if the mouse's left button is pressed
 			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN) {
 				b2Vec2 mouse_position(PIXEL_TO_METERS(App->input->GetMouseX()) * SCREEN_SIZE, PIXEL_TO_METERS(App->input->GetMouseY()) * SCREEN_SIZE);
-				if (App->scene_intro->player_circle->body->GetFixtureList()->GetShape()->TestPoint(App->scene_intro->player_circle->body->GetTransform(), mouse_position) == true) {
+				if (App->scene_intro->player_circle->body->GetFixtureList()->GetShape()->TestPoint(App->scene_intro->player_circle->body->GetTransform(), mouse_position) == true && App->scene_intro->player_circle->body == f->GetBody()) {
 					b2MouseJointDef def;
 					def.bodyA = ground;
 					def.bodyB = f->GetBody();

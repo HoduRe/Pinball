@@ -648,7 +648,7 @@ void ModuleSceneIntro::ChargeHighStage() {
 	pinkPlattformSensor = (App->physics->CreateRectangleSensor(113, 140, 14, 5));
 	pinkPlattformSensor->body->SetType(b2_kinematicBody);
 	plat = App->physics->CreateRectangle(113, 140, 14, 5, true);
-	plat->body->SetType(b2_kinematicBody);	
+	plat->body->SetType(b2_kinematicBody);
 
 }
 
