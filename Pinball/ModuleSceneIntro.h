@@ -78,6 +78,8 @@ public:
 	//fonts
 	int font_name;
 	int font2;
+	int fontblue;
+	int fontlightblue;
 
 	//score related variables
 	char score_text[10];

@@ -32,6 +32,8 @@ bool ModuleSceneIntro::Start()
 	scene = App->textures->Load("pinball/level_elements.png");
 	font_name = App->fonts->Load("pinball/Font.png", "0123456789ABCDEFGHIJKLMNOPQRSTUWYZ+-", 1);
 	font2 = App->fonts->Load("pinball/Font2.png", "0123456789", 1);
+	fontblue = App->fonts->Load("pinball/Font-blue.png", " 123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1);
+	fontlightblue = App->fonts->Load("pinball/Font-light-blue.png", " 123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1);
 
 	bumper_hit= App->audio->LoadFx("pinball/audio/bumper_hit.wav");
 	yellowSquare_hit = App->audio->LoadFx("pinball/audio/yellowSquare_hit.wav");
@@ -157,6 +159,12 @@ void ModuleSceneIntro::TitleBlit() {
 	elements_rect.w = 192;
 	elements_rect.h = 104;
 	App->renderer->Blit(scene, 24, 24, &elements_rect);
+	
+	App->fonts->BlitText(60, 137, fontlightblue, "1 PLAYER GAME A");
+	App->fonts->BlitText(60, 157, fontlightblue, "1 PLAYER GAME B");
+	App->fonts->BlitText(60, 177, fontblue, "2 PLAYER GAME A");
+	App->fonts->BlitText(60, 197, fontblue, "2 PLAYER GAME B");
+
 }
 
 void ModuleSceneIntro::LowStageBlit() {
