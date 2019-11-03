@@ -63,10 +63,12 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	// Player position update
+	App->player->buffer_position = App->player->position;
 	if (player_circle != NULL) {
 		App->player->position.x = METERS_TO_PIXELS(player_circle->body->GetPosition().x) / SCREEN_SIZE - 5;
 		App->player->position.y = METERS_TO_PIXELS(player_circle->body->GetPosition().y) / SCREEN_SIZE - 5;
 	}
+	CheckOneWayColliders();
 
 	
 	// Stage Print
@@ -595,12 +597,38 @@ void ModuleSceneIntro::CreateFlicker() {
 	revolute_joint_right = App->physics->CreateFlicker(*flicker2, true);		// Right flicker joint creation
 }
 
-void ModuleSceneIntro::ScoreUpdater(uint s)
-{
+void ModuleSceneIntro::ScoreUpdater(uint s) {
 	score += s;
 }
 
-void ModuleSceneIntro::CreatePlayer(float x, float y)
-{
+void ModuleSceneIntro::CreatePlayer(float x, float y) {
 	player_circle = App->physics->CreateCircle(x, y, 16, true);	// Creates player
+}
+
+void ModuleSceneIntro::CheckOneWayColliders() {
+	b2Vec2 speed_aux;
+	if (stage == ST_HIGH_STAGE) {
+		if (App->player->position.x >= 191 && App->player->position.x <= 197 && App->player->position.y >= 25 && App->player->position.y <= 40) {
+			if (App->player->position.x > App->player->buffer_position.x) {
+				player_circle->body->GetLinearVelocityFromWorldPoint(speed_aux);
+				speed_aux.x = -30;
+				player_circle->body->SetLinearVelocity(speed_aux);
+			}
+		}
+		else if (App->player->position.x >= 95 && App->player->position.x <= 104 && App->player->position.y >= 26 && App->player->position.y <= 43) {
+			if (App->player->position.x < App->player->buffer_position.x) {
+				player_circle->body->GetLinearVelocityFromWorldPoint(speed_aux);
+				speed_aux.x = 30;
+				player_circle->body->SetLinearVelocity(speed_aux);
+			}
+		}
+		else if (App->player->position.x >= 200 && App->player->position.x <= 208 && App->player->position.y >= 128 && App->player->position.y <= 139) {
+			if (App->player->position.y < App->player->buffer_position.y) {
+				player_circle->body->GetLinearVelocityFromWorldPoint(speed_aux);
+				speed_aux.x = -30;
+				speed_aux.y = 0;
+				player_circle->body->SetLinearVelocity(speed_aux);
+			}
+		}
+	}
 }

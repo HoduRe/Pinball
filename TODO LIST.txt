@@ -1,10 +1,6 @@
 Add UI
 Add combo score
-Add specific amount of balls per round
-Save previous score in a game session
 Implement audios
-Clear begin and end, implement cycles
-High stage one-side colliders
 Add elements change when hit
 Red blocks spit the ball when entered
 Make it glow orange when all cards are flipped

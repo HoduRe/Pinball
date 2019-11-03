@@ -37,6 +37,8 @@ public:
 	void CreatePlayer(float x, float y);
 //Score update
 	void ScoreUpdater(uint s);
+// Checks special one way colliders
+	void CheckOneWayColliders();
 
 public:
 	SDL_Texture* scene;

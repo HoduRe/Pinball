@@ -21,6 +21,7 @@ public:
 	int kicker_timer;
 	b2Vec2 speed;
 	iPoint position;
+	iPoint buffer_position;
 	bool left_flicker;
 	bool right_flicker;
 	SDL_Texture* player;

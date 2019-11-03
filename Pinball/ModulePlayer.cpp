@@ -83,7 +83,7 @@ void ModulePlayer::StateMachine() {
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		if (App->scene_intro->flicker1->body->GetAngle() > -45 * DEGTORAD) {
-			App->scene_intro->flicker1->body->SetAngularVelocity(-30);
+			App->scene_intro->flicker1->body->SetAngularVelocity(-15);
 			left_flicker = true;
 		}
 		else { App->scene_intro->flicker1->body->SetAngularVelocity(0); }
@@ -92,7 +92,7 @@ void ModulePlayer::StateMachine() {
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
 		if (App->scene_intro->flicker2->body->GetAngle() < 45 * DEGTORAD) {
-			App->scene_intro->flicker2->body->SetAngularVelocity(30);
+			App->scene_intro->flicker2->body->SetAngularVelocity(15);
 			right_flicker = true;
 		}
 		else { App->scene_intro->flicker2->body->SetAngularVelocity(0); }
@@ -105,13 +105,13 @@ void ModulePlayer::StateMachine() {
 	if (App->scene_intro->flicker1 != NULL && App->scene_intro->flicker2 != NULL) {
 		if (left_flicker == false) {
 			if (App->scene_intro->flicker1->body->GetAngle() < 0 * DEGTORAD) {
-				App->scene_intro->flicker1->body->SetAngularVelocity(30);
+				App->scene_intro->flicker1->body->SetAngularVelocity(15);
 			}
 			else { App->scene_intro->flicker1->body->SetAngularVelocity(0); }
 		}
 		if (right_flicker == false) {
 			if (App->scene_intro->flicker2->body->GetAngle() > 0 * DEGTORAD) {
-				App->scene_intro->flicker2->body->SetAngularVelocity(-30);
+				App->scene_intro->flicker2->body->SetAngularVelocity(-15);
 			}
 			else { App->scene_intro->flicker2->body->SetAngularVelocity(0); }
 		}
