@@ -479,22 +479,82 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		}
 	}
 
-	for (p2List_item<PhysBody*>* iterator = App->scene_intro->yellowSquareSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	if (physA == App->scene_intro->square1)
 	{
-		if (physA == iterator->data)
-		{
-			App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
-			App->scene_intro->ScoreUpdater(100);
-		}
+		App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->sqcollected1 = true;
+	}
+	
+	if (physA == App->scene_intro->square2)
+	{
+		App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->sqcollected2 = true;
+	}
+	
+	if (physA == App->scene_intro->square3)
+	{
+		App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->sqcollected3 = true;
+	}
+	
+	if (physA == App->scene_intro->square4)
+	{
+		App->audio->PlayFx(App->scene_intro->yellowSquare_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->sqcollected4 = true;
 	}
 
-	for (p2List_item<PhysBody*>* iterator = App->scene_intro->tagSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+
+	if (physA == App->scene_intro->tag1)
 	{
-		if (physA == iterator->data)
-		{
-			App->audio->PlayFx(App->scene_intro->tags_hit);
-			App->scene_intro->ScoreUpdater(200);
-		}
+		App->audio->PlayFx(App->scene_intro->tags_hit);
+		App->scene_intro->ScoreUpdater(200);
+		App->scene_intro->tagCollected1 = true;
+	}
+	
+	if (physA == App->scene_intro->tag2)
+	{
+		App->audio->PlayFx(App->scene_intro->tags_hit);
+		App->scene_intro->ScoreUpdater(200);
+		App->scene_intro->tagCollected2 = true;
+	}
+	
+	if (physA == App->scene_intro->tag3)
+	{
+		App->audio->PlayFx(App->scene_intro->tags_hit);
+		App->scene_intro->ScoreUpdater(200);
+		App->scene_intro->tagCollected3 = true;
+	}
+	
+	if (physA == App->scene_intro->tag4)
+	{
+		App->audio->PlayFx(App->scene_intro->tags_hit);
+		App->scene_intro->ScoreUpdater(200);
+		App->scene_intro->tagCollected4 = true;
+	}
+	
+	if (physA == App->scene_intro->tag5)
+	{
+		App->audio->PlayFx(App->scene_intro->tags_hit);
+		App->scene_intro->ScoreUpdater(200);
+		App->scene_intro->tagCollected5 = true;
+	}
+	
+	if (physA == App->scene_intro->tag6)
+	{
+		App->audio->PlayFx(App->scene_intro->tags_hit);
+		App->scene_intro->ScoreUpdater(200);
+		App->scene_intro->tagCollected6 = true;
+	}
+	
+	if (physA == App->scene_intro->tag7)
+	{
+		App->audio->PlayFx(App->scene_intro->tags_hit);
+		App->scene_intro->ScoreUpdater(200);
+		App->scene_intro->tagCollected7 = true;
 	}
 
 	if (physA == App->scene_intro->tenSensor)
@@ -581,7 +641,7 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		App->scene_intro->ScoreUpdater(100);
 		App->scene_intro->collected7 = true;
 	}
-	if (physA == App->scene_intro->light1)
+	if (physA == App->scene_intro->light8)
 	{
 		App->audio->PlayFx(App->scene_intro->egg_hit);
 		App->scene_intro->ScoreUpdater(100);
@@ -643,6 +703,19 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		App->scene_intro->collected6 = false;
 		App->scene_intro->collected7 = false;
 		App->scene_intro->collected8 = false;
+
+		App->scene_intro->tagCollected1 = false;
+		App->scene_intro->tagCollected2 = false;
+		App->scene_intro->tagCollected3 = false;
+		App->scene_intro->tagCollected4 = false;
+		App->scene_intro->tagCollected5 = false;
+		App->scene_intro->tagCollected6 = false;
+		App->scene_intro->tagCollected7 = false;
+
+		App->scene_intro->sqcollected1 = false;
+		App->scene_intro->sqcollected2 = false;
+		App->scene_intro->sqcollected3 = false;
+		App->scene_intro->sqcollected4 = false;
 
 		if (App->scene_intro->ball != 0){
 			App->scene_intro->generate_player = true;

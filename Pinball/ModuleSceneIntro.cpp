@@ -43,6 +43,17 @@ bool ModuleSceneIntro::Start()
 	cardK = App->textures->Load("pinball/cardK.png");
 	cardAs = App->textures->Load("pinball/cardAs.png");
 	lights = App->textures->Load("pinball/lights.png");
+
+	tag_tex1 = App->textures->Load("pinball/tag1.png");
+	tag_tex2 = App->textures->Load("pinball/tag2.png");
+	tag_tex3 = App->textures->Load("pinball/tag3.png");
+	tag_tex4 = App->textures->Load("pinball/tag4.png");
+	tag_tex5 = App->textures->Load("pinball/tag5.png");
+	tag_tex6 = App->textures->Load("pinball/tag6.png");
+	tag_tex7 = App->textures->Load("pinball/tag7.png");
+
+	yellowSquare = App->textures->Load("pinball/yellow.png");
+	
 	
 	font_name = App->fonts->Load("pinball/Font.png", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1);
 	font2 = App->fonts->Load("pinball/Font2.png", "0123456789", 1);
@@ -75,6 +86,13 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(cardK);
 	App->textures->Unload(cardQ);
 	App->textures->Unload(lights);
+	App->textures->Unload(tag_tex1);
+	App->textures->Unload(tag_tex2);
+	App->textures->Unload(tag_tex3);
+	App->textures->Unload(tag_tex4);
+	App->textures->Unload(tag_tex5);
+	App->textures->Unload(tag_tex6);
+	App->textures->Unload(tag_tex7);
 	App->textures->Unload(card_reverse);
 	
 	return true;
@@ -273,41 +291,7 @@ void ModuleSceneIntro::LowStageBlit() {
 	scene_rect.w = 14;
 	scene_rect.h = 24;
 	App->renderer->Blit(scene, 168, 20, &scene_rect);
-	scene_rect.x = 8;	// Tag 1 blit
-	scene_rect.y = 109;
-	scene_rect.w = 15;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 80, 55, &scene_rect);
-	scene_rect.x = 8;	// Tag 2 blit
-	scene_rect.y = 117;
-	scene_rect.w = 15;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 80, 63, &scene_rect);
-	scene_rect.x = 8;	// Tag 3 blit
-	scene_rect.y = 125;
-	scene_rect.w = 15;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 80, 71, &scene_rect);
-	scene_rect.x = 8;	// Tag 4 blit
-	scene_rect.y = 133;
-	scene_rect.w = 15;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 80, 79, &scene_rect);
-	scene_rect.x = 8;	// Tag 5 blit
-	scene_rect.y = 141;
-	scene_rect.w = 15;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 80, 87, &scene_rect);
-	scene_rect.x = 8;	// Tag 6 blit
-	scene_rect.y = 149;
-	scene_rect.w = 15;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 80, 95, &scene_rect);
-	scene_rect.x = 8;	// Tag 7 blit
-	scene_rect.y = 157;
-	scene_rect.w = 15;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 80, 103, &scene_rect);
+
 	scene_rect.x = 60;	// Left egg blit
 	scene_rect.y = 10;
 	scene_rect.w = 9;
@@ -378,6 +362,7 @@ void ModuleSceneIntro::LowStageBlit() {
 		App->renderer->Blit(scene, 156, 182, &scene_rect); // Right flicker blit
 	}
 	CardBlit();
+	TagBlit();
 }
 
 void ModuleSceneIntro::HighStageBlit() {
@@ -386,26 +371,6 @@ void ModuleSceneIntro::HighStageBlit() {
 	scene_rect.w = SCREEN_WIDTH;
 	scene_rect.h = SCREEN_HEIGHT;
 	App->renderer->Blit(scene, 0, 0, &scene_rect);
-	scene_rect.x = 8;	// First vertical orange rectangle blit
-	scene_rect.y = 168;
-	scene_rect.w = 2;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 88, 128, &scene_rect);
-	scene_rect.x = 8;	// Second vertical orange rectangle blit
-	scene_rect.y = 168;
-	scene_rect.w = 2;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 88, 136, &scene_rect);
-	scene_rect.x = 8;	// Third vertical orange rectangle blit
-	scene_rect.y = 168;
-	scene_rect.w = 2;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 88, 144, &scene_rect);
-	scene_rect.x = 8;	// Fourth vertical orange rectangle blit
-	scene_rect.y = 168;
-	scene_rect.w = 2;
-	scene_rect.h = 7;
-	App->renderer->Blit(scene, 88, 152, &scene_rect);
 	scene_rect.x = 101;	// Diagonal orange rectangle blit
 	scene_rect.y = 167;
 	scene_rect.w = 8;
@@ -416,46 +381,6 @@ void ModuleSceneIntro::HighStageBlit() {
 	scene_rect.w = 22;
 	scene_rect.h = 24;
 	App->renderer->Blit(scene, 135, 89, &scene_rect);
-	scene_rect.x = 61;	// First (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-	//App->renderer->Blit(scene, 88, 39, &scene_rect);
-	scene_rect.x = 61;	// Second (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-//	App->renderer->Blit(scene, 83, 48, &scene_rect);
-	scene_rect.x = 61;	// Three (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-//	App->renderer->Blit(scene, 78, 57, &scene_rect);
-	scene_rect.x = 61;	// Fourth (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-//	App->renderer->Blit(scene, 76, 67, &scene_rect);
-	scene_rect.x = 61;	// Fifth (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-//	App->renderer->Blit(scene, 76, 77, &scene_rect);
-	scene_rect.x = 61;	// Sixth (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-//	App->renderer->Blit(scene, 78, 88, &scene_rect);
-	scene_rect.x = 61;	// Seventh (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-	//App->renderer->Blit(scene, 83, 97, &scene_rect);
-	scene_rect.x = 61;	// Eight (from above) circle blit
-	scene_rect.y = 169;
-	scene_rect.w = 4;
-	scene_rect.h = 5;
-	//App->renderer->Blit(scene, 88, 105, &scene_rect);
 	scene_rect.x = 29;	// Left wallrus blit
 	scene_rect.y = 79;
 	scene_rect.w = 16;
@@ -561,6 +486,7 @@ void ModuleSceneIntro::HighStageBlit() {
 	App->fonts->BlitText(95, 64, font2, pulsatorUP_text);
 
 	LightBLit();
+	YellowSquaresBlit();
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
@@ -607,13 +533,13 @@ void ModuleSceneIntro::ChargeLowStage() {
 	App->physics->CreateChain(182, -2, scene7, 12, false);		// Right white edge
 
 	//Tags 1 to 7 sensors
-	tagSensors.add(App->physics->CreateRectangleSensor(81,106,2,7));
-	tagSensors.add(App->physics->CreateRectangleSensor(81, 98, 2, 7));
-	tagSensors.add(App->physics->CreateRectangleSensor(81, 90, 2, 7));
-	tagSensors.add(App->physics->CreateRectangleSensor(81, 82, 2, 7));
-	tagSensors.add(App->physics->CreateRectangleSensor(81, 74, 2, 7));
-	tagSensors.add(App->physics->CreateRectangleSensor(81, 66, 2, 7));
-	tagSensors.add(App->physics->CreateRectangleSensor(81, 58, 2, 7));
+	tag7 = (App->physics->CreateRectangleSensor(81,106,2,7));
+	tag6 = (App->physics->CreateRectangleSensor(81, 98, 2, 7));
+	tag5 = (App->physics->CreateRectangleSensor(81, 90, 2, 7));
+	tag4 = (App->physics->CreateRectangleSensor(81, 82, 2, 7));
+	tag3 = (App->physics->CreateRectangleSensor(81, 74, 2, 7));
+	tag2 = (App->physics->CreateRectangleSensor(81, 66, 2, 7));
+	tag1 = (App->physics->CreateRectangleSensor(81, 58, 2, 7));
 
 	// Cards sensors
 
@@ -672,10 +598,10 @@ void ModuleSceneIntro::ChargeHighStage() {
 	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(160, 62, 8, 2));
 
 	//sensors for the yellow squares in the left
-	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89,131, 2, 7));
-	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89, 139, 2, 7));
-	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89, 148, 2, 7));
-	yellowSquareSensors.add(App->physics->CreateRectangleSensor(89, 156, 2, 7));
+	square1 = (App->physics->CreateRectangleSensor(89,131, 2, 7));
+	square2 = (App->physics->CreateRectangleSensor(89, 139, 2, 7));
+	square3 = (App->physics->CreateRectangleSensor(89, 147, 2, 7));
+	square4 = (App->physics->CreateRectangleSensor(89, 154, 2, 7));
 
 	//Yellow pulsator sensor
 	p.x = 6.65;
@@ -775,12 +701,12 @@ void ModuleSceneIntro::pinkPlatformUpdate()
 void ModuleSceneIntro::CardBlit()
 {
 
-	// -2 and -25 are there because the sensors is between the panels but the cards are printed above them
+	// the correction is there because the sensors is between the panels but the cards are printed above them
 	if (reverse10)
 	{
 		int x, y;
 		tenSensor->GetPosition(x, y);
-		App->renderer->Blit(card10, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+		App->renderer->Blit(card10, (x / SCREEN_SIZE) - 2*correction, (y / SCREEN_SIZE) - 25*correction, NULL, 1.0f);
 	}
 	else
 	{
@@ -849,48 +775,122 @@ void ModuleSceneIntro:: LightBLit()
 	{
 		int x, y;
 		light1->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE)+ correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
 	}
 	if (!collected2)
 	{
 		int x, y;
 		light2->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
 	}
 	if (!collected3)
 	{
 		int x, y;
 		light3->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
 	}
 	if (!collected4)
 	{
 		int x, y;
 		light4->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
 	}
 	if (!collected5)
 	{
 		int x, y;
 		light5->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
 	}
 	if (!collected6)
 	{
 		int x, y;
 		light6->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
 	}
 	if (!collected7)
 	{
 		int x, y;
 		light7->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
 	}
 	if (!collected8)
 	{
 		int x, y;
 		light8->GetPosition(x, y);
-		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + correction, NULL, 1.0f);
+	}
+}
+
+void ModuleSceneIntro::TagBlit()
+{
+	if (!tagCollected1)
+	{
+		int x, y;
+		tag1->GetPosition(x, y);
+		App->renderer->Blit(tag_tex1, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 3*correction, NULL, 1.0f);
+	}
+	if (!tagCollected2)
+	{
+		int x, y;
+		tag2->GetPosition(x, y);
+		App->renderer->Blit(tag_tex2, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 4*correction, NULL, 1.0f);
+	}
+	if (!tagCollected3)
+	{
+		int x, y;
+		tag3->GetPosition(x, y);
+		App->renderer->Blit(tag_tex3, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 3*correction, NULL, 1.0f);
+	}
+	if (!tagCollected4)
+	{
+		int x, y;
+		tag4->GetPosition(x, y);
+		App->renderer->Blit(tag_tex4, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 3*correction, NULL, 1.0f);
+	}
+	if (!tagCollected5)
+	{
+		int x, y;
+		tag5->GetPosition(x, y);
+		App->renderer->Blit(tag_tex5, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 3*correction, NULL, 1.0f);
+	}
+	if (!tagCollected6)
+	{
+		int x, y;
+		tag6->GetPosition(x, y);
+		App->renderer->Blit(tag_tex6, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 4*correction, NULL, 1.0f);
+	}
+	if (!tagCollected7)
+	{
+		int x, y;
+		tag7->GetPosition(x, y);
+		App->renderer->Blit(tag_tex7, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 4*correction, NULL, 1.0f);
+	}
+}
+
+void ModuleSceneIntro::YellowSquaresBlit()
+{
+	if (!sqcollected1)
+	{
+		int x, y;
+		square1->GetPosition(x, y);
+		App->renderer->Blit(yellowSquare, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 4 * correction, NULL, 1.0f);
+	}
+	if (!sqcollected2)
+	{
+		int x, y;
+		square2->GetPosition(x, y);
+		App->renderer->Blit(yellowSquare, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 3 * correction, NULL, 1.0f);
+	}
+	if (!sqcollected3)
+	{
+		int x, y;
+		square3->GetPosition(x, y);
+		App->renderer->Blit(yellowSquare, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 3 * correction, NULL, 1.0f);
+	}
+	if (!sqcollected4)
+	{
+		int x, y;
+		square4->GetPosition(x, y);
+		App->renderer->Blit(yellowSquare, (x / SCREEN_SIZE) + correction, (y / SCREEN_SIZE) + 4 * correction, NULL, 1.0f);
 	}
 }

@@ -125,6 +125,49 @@ public:
 	
 	int correction = 1;
 	void LightBLit();
+
+	//tags
+	SDL_Texture* tag_tex1;
+	SDL_Texture* tag_tex2;
+	SDL_Texture* tag_tex3;
+	SDL_Texture* tag_tex4;
+	SDL_Texture* tag_tex5;
+	SDL_Texture* tag_tex6;
+	SDL_Texture* tag_tex7;
+
+	PhysBody* tag1;
+	PhysBody* tag2;
+	PhysBody* tag3;
+	PhysBody* tag4;
+	PhysBody* tag5;
+	PhysBody* tag6;
+	PhysBody* tag7;
+
+	bool tagCollected1 = false;
+	bool tagCollected2 = false;
+	bool tagCollected3 = false;
+	bool tagCollected4 = false;
+	bool tagCollected5 = false;
+	bool tagCollected6 = false;
+	bool tagCollected7 = false;
+
+	void TagBlit();
+
+	//yellow rectangles
+	SDL_Texture* yellowSquare;
+	
+	PhysBody* square1;
+	PhysBody* square2;
+	PhysBody* square3;
+	PhysBody* square4;
+
+	bool sqcollected1 = false;
+	bool sqcollected2 = false;
+	bool sqcollected3 = false;
+	bool sqcollected4 = false;
+
+	void YellowSquaresBlit();
+
 	
 	//FX
 	uint bonus_fx;

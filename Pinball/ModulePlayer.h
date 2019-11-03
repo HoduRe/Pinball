@@ -25,4 +25,6 @@ public:
 	bool left_flicker;
 	bool right_flicker;
 	SDL_Texture* player;
+	uint player_fx;
+	uint kicker_fx;
 };

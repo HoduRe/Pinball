@@ -6,6 +6,7 @@
 #include "ModulePhysics.h"
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
+#include "ModuleAudio.h"
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -22,6 +23,8 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 	player = App->textures->Load("pinball/player.png");
+	player_fx = App->audio->LoadFx("pinball/audio/flicker.wav");
+	kicker_fx = App->audio->LoadFx("pinball/audio/kicker.wav");
 
 	return true;
 }
@@ -98,6 +101,11 @@ void ModulePlayer::StateMachine() {
 	}	// LEFT FLIPPER
 	else { left_flicker = false; }
 
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+	{
+		App->audio->PlayFx(player_fx);
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
 		if (App->scene_intro->flicker2->body->GetAngle() < 45 * DEGTORAD) {
 			App->scene_intro->flicker2->body->SetAngularVelocity(15);
@@ -106,6 +114,11 @@ void ModulePlayer::StateMachine() {
 		else { App->scene_intro->flicker2->body->SetAngularVelocity(0); }
 	}	// RIGHT FLIPPER
 	else { right_flicker = false; }
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+	{
+		App->audio->PlayFx(player_fx);
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT) {
 	}	// KICKER
@@ -124,4 +137,10 @@ void ModulePlayer::StateMachine() {
 			else { App->scene_intro->flicker2->body->SetAngularVelocity(0); }
 		}
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
+	{
+		App->audio->PlayFx(kicker_fx);
+	}
+
 }
