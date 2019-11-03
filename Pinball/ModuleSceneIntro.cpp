@@ -27,6 +27,9 @@ bool ModuleSceneIntro::Start()
 	bool ret = true;
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
+	title_cursor = 1;
+	penguin_timer = 0;
+	penguin_switch = false;
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	scene = App->textures->Load("pinball/level_elements.png");
@@ -64,6 +67,11 @@ update_status ModuleSceneIntro::Update()
 	if (generate_player == true) {
 		CreatePlayer(220, 150);
 		generate_player = false;
+	}
+	penguin_timer++;
+	if (penguin_timer % 30 == 0) {
+		if (penguin_switch == false) { penguin_switch = true; }
+		else if (penguin_switch == true) { penguin_switch = false; }
 	}
 
 	// Player position update
@@ -163,6 +171,24 @@ void ModuleSceneIntro::TitleBlit() {
 	App->fonts->BlitText(60, 177, fontblue, "2 PLAYER GAME A");
 	App->fonts->BlitText(60, 197, fontblue, "2 PLAYER GAME B");
 
+	scene_rect.x = 21;
+	scene_rect.y = 316;
+	scene_rect.w = 7;
+	scene_rect.h = 7;
+	switch (title_cursor) {
+	case 1:
+		App->renderer->Blit(scene, 43, 137, &scene_rect);
+		break;
+	case 2:
+		App->renderer->Blit(scene, 43, 157, &scene_rect);
+		break;
+	case 3:
+		App->renderer->Blit(scene, 43, 177, &scene_rect);
+		break;
+	case 4:
+		App->renderer->Blit(scene, 43, 197, &scene_rect);
+		break;
+	}
 }
 
 void ModuleSceneIntro::LowStageBlit() {
@@ -408,21 +434,40 @@ void ModuleSceneIntro::HighStageBlit() {
 	scene_rect.w = 16;
 	scene_rect.h = 17;
 	App->renderer->Blit(scene, 163, 113, &scene_rect);
-	scene_rect.x = 10;	// Left penguin blit
-	scene_rect.y = 8;
-	scene_rect.w = 12;
-	scene_rect.h = 14;
-	App->renderer->Blit(scene, 123, 146, &scene_rect);
-	scene_rect.x = 27;	// Center penguin blit
-	scene_rect.y = 8;
-	scene_rect.w = 12;
-	scene_rect.h = 14;
-	App->renderer->Blit(scene, 139, 146, &scene_rect);
-	scene_rect.x = 43;	// Right penguin blit
-	scene_rect.y = 8;
-	scene_rect.w = 12;
-	scene_rect.h = 14;
-	App->renderer->Blit(scene, 155, 146, &scene_rect);
+	if (penguin_switch == true) {
+		scene_rect.x = 10;	// Left penguin blit
+		scene_rect.y = 8;
+		scene_rect.w = 12;
+		scene_rect.h = 14;
+		App->renderer->Blit(scene, 123, 146, &scene_rect);
+		scene_rect.x = 27;	// Center penguin blit
+		scene_rect.y = 8;
+		scene_rect.w = 12;
+		scene_rect.h = 14;
+		App->renderer->Blit(scene, 139, 146, &scene_rect);
+		scene_rect.x = 43;	// Right penguin blit
+		scene_rect.y = 8;
+		scene_rect.w = 12;
+		scene_rect.h = 14;
+		App->renderer->Blit(scene, 155, 146, &scene_rect);
+	}
+	else if (penguin_switch == false) {
+		scene_rect.x = 10;	// Left penguin blit
+		scene_rect.y = 26;
+		scene_rect.w = 12;
+		scene_rect.h = 14;
+		App->renderer->Blit(scene, 123, 146, &scene_rect);
+		scene_rect.x = 27;	// Center penguin blit
+		scene_rect.y = 26;
+		scene_rect.w = 12;
+		scene_rect.h = 14;
+		App->renderer->Blit(scene, 139, 146, &scene_rect);
+		scene_rect.x = 43;	// Right penguin blit
+		scene_rect.y = 26;
+		scene_rect.w = 12;
+		scene_rect.h = 14;
+		App->renderer->Blit(scene, 155, 146, &scene_rect);
+	}
 	if (flicker1->body->GetAngle() >= 0) {
 		scene_rect.x = 31;
 		scene_rect.y = 107;

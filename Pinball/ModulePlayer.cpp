@@ -67,6 +67,14 @@ update_status ModulePlayer::PreUpdate() {
 }
 
 void ModulePlayer::StateMachine() {
+	if (App->scene_intro->stage == ST_TITLE_SCREEN) {
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && App->scene_intro->title_cursor != 4) {
+			App->scene_intro->title_cursor++;
+		}
+		else if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN && App->scene_intro->title_cursor != 1) {
+			App->scene_intro->title_cursor--;
+		}
+	}
 	// Controls
 	if (App->scene_intro->player_circle != NULL) {
 		speed = App->scene_intro->player_circle->body->GetLinearVelocity();

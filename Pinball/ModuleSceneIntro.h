@@ -59,7 +59,9 @@ public:
 	stage_state stage;
 	stage_state buffer_stage;
 	bool generate_player = false;
-	
+	int title_cursor;
+	int penguin_timer;
+	bool penguin_switch;
 	
 	PhysBody* loseSensor;
 
