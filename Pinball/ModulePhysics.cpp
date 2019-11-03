@@ -458,6 +458,8 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 {
 	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
 	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+	int i = 0;
+
 
 
 	for (p2List_item<PhysBody*>* iterator = App->scene_intro->hundred_scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
@@ -495,28 +497,110 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 		}
 	}
 
-	for (p2List_item<PhysBody*>* iterator = App->scene_intro->cardSensors.getFirst(); iterator != NULL; iterator = iterator->next)
+	if (physA == App->scene_intro->tenSensor)
 	{
-		if (physA == iterator->data)
-		{
-			App->audio->PlayFx(App->scene_intro->card_hit);
-			App->scene_intro->ScoreUpdater(200);
-		}
+		App->audio->PlayFx(App->scene_intro->card_hit);
+		App->scene_intro->ScoreUpdater(500);
+		App->scene_intro->reverse10 = true;
+		App->scene_intro->awardcount = App->scene_intro->awardcount+1;
+	}
+	if (physA == App->scene_intro->JSensor)
+	{
+		App->audio->PlayFx(App->scene_intro->card_hit);
+		App->scene_intro->ScoreUpdater(500);
+		App->scene_intro->reverseJ = true;
+		App->scene_intro->awardcount += 1;
+	}
+	if (physA == App->scene_intro->JSensor)
+	{
+		App->audio->PlayFx(App->scene_intro->card_hit);
+		App->scene_intro->ScoreUpdater(500);
+		App->scene_intro->reverseJ = true;
+		App->scene_intro->awardcount += 1;
+	}
+	if (physA == App->scene_intro->QSensor)
+	{
+		App->audio->PlayFx(App->scene_intro->card_hit);
+		App->scene_intro->ScoreUpdater(500);
+		App->scene_intro->reverseQ = true;
+		App->scene_intro->awardcount += 1;
+	}
+	if (physA == App->scene_intro->KSensor)
+	{
+		App->audio->PlayFx(App->scene_intro->card_hit);
+		App->scene_intro->ScoreUpdater(500);
+		App->scene_intro->reverseK = true;
+		App->scene_intro->awardcount += 1;
+	}
+	if (physA == App->scene_intro->AsSensor)
+	{
+		App->audio->PlayFx(App->scene_intro->card_hit);
+		App->scene_intro->ScoreUpdater(500);
+		App->scene_intro->reverseAs = true;
+	}
+	
+	if (physA == App->scene_intro->light1)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected1 = true;
+	}
+	if (physA == App->scene_intro->light2)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected2 = true;
+	}
+	if (physA == App->scene_intro->light3)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected3 = true;
+	}
+	if (physA == App->scene_intro->light4)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected4 = true;
+	}
+	if (physA == App->scene_intro->light5)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected5 = true;
+	}
+	if (physA == App->scene_intro->light6)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected6 = true;
+	}
+	if (physA == App->scene_intro->light7)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected7 = true;
+	}
+	if (physA == App->scene_intro->light1)
+	{
+		App->audio->PlayFx(App->scene_intro->egg_hit);
+		App->scene_intro->ScoreUpdater(100);
+		App->scene_intro->collected8 = true;
 	}
 
 	
-		if (physA == App->scene_intro->pulsator)
-		{
-			App->audio->PlayFx(App->scene_intro->card_hit);
-			App->scene_intro->ScoreUpdater(App->scene_intro->pulsatorUP);
-			App->scene_intro->pulsatorUP += 100u;
+	if (physA == App->scene_intro->pulsator)
+	{
+		App->audio->PlayFx(App->scene_intro->card_hit);
+		App->scene_intro->ScoreUpdater(App->scene_intro->pulsatorUP);
+		App->scene_intro->pulsatorUP += 100u;
 
-			if (App->scene_intro->pulsatorUP > 1000u)
-			{
-				App->scene_intro->pulsatorUP = 1000u;
-			}
-			
+		if (App->scene_intro->pulsatorUP > 1000u)
+		{
+			App->scene_intro->pulsatorUP = 1000u;
 		}
+			
+	}
 	
 
 	for (p2List_item<PhysBody*>* iterator = App->scene_intro->fivehundred_scoreSensors.getFirst(); iterator != NULL; iterator = iterator->next)
@@ -540,8 +624,25 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	if (physA == App->scene_intro->loseSensor)
 	{
 		App->scene_intro->ball -= 1u;
+		App->scene_intro->previousscore = App->scene_intro->score;
 		App->scene_intro->score = 0u;
 		App->scene_intro->pulsatorUP = 100u;
+		App->scene_intro->awardcount=0;
+
+		App->scene_intro->reverse10 = false;
+		App->scene_intro->reverseJ = false;
+		App->scene_intro->reverseQ = false;
+		App->scene_intro->reverseK = false;
+		App->scene_intro->reverseAs = false;
+
+		App->scene_intro->collected1 = false;
+		App->scene_intro->collected2 = false;
+		App->scene_intro->collected3 = false;
+		App->scene_intro->collected4 = false;
+		App->scene_intro->collected5 = false;
+		App->scene_intro->collected6 = false;
+		App->scene_intro->collected7 = false;
+		App->scene_intro->collected8 = false;
 
 		if (App->scene_intro->ball != 0){
 			App->scene_intro->generate_player = true;

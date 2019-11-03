@@ -73,15 +73,58 @@ public:
 	//Moving platform
 	SDL_Texture* plattform_tex;
 	PhysBody* plat;
-	float pinkPlattformPos = 115; //we wont change Y pos
 	void pinkPlatformUpdate();
 	bool Rightlimit = false;
 	bool Leftlimit = true;
-
 	b2Vec2 pVel;
-
-
 	plat_state pstate;
+
+	//Cards
+	SDL_Texture* card_reverse;
+	SDL_Texture* card10;
+	SDL_Texture* cardJ;
+	SDL_Texture* cardQ;
+	SDL_Texture* cardK;
+	SDL_Texture* cardAs;
+
+	PhysBody* tenSensor;
+	PhysBody* JSensor;
+	PhysBody* QSensor;
+	PhysBody* KSensor;
+	PhysBody* AsSensor;
+
+	// to check if the card is reversed or not;
+	bool reverse10 = false;
+	bool reverseJ = false;
+	bool reverseQ = false;
+	bool reverseK = false;
+	bool reverseAs = false;
+
+	void CardBlit();
+
+	//lights
+	SDL_Texture* lights;
+
+	PhysBody* light1;
+	PhysBody* light2;
+	PhysBody* light3;
+	PhysBody* light4;
+	PhysBody* light5;
+	PhysBody* light6;
+	PhysBody* light7;
+	PhysBody* light8;
+	
+	bool collected1 = false;
+	bool collected2 = false;
+	bool collected3 = false;
+	bool collected4 = false;
+	bool collected5 = false;
+	bool collected6 = false;
+	bool collected7 = false;
+	bool collected8 = false;
+	
+	int correction = 1;
+	void LightBLit();
 	
 	//FX
 	uint bonus_fx;
@@ -91,6 +134,7 @@ public:
 	uint numeric_hit;
 	uint card_hit;
 	uint egg_hit;
+	uint award;
 	
 	
 	//fonts
@@ -106,8 +150,14 @@ public:
 	char topscore_text[10];
 	uint topscore = 0u;
 
+	char previousscore_text[10];
+	uint previousscore = 0u;
+
 	char ball_text[10];
 	uint ball = 02;
+
+	bool ballAward=false;
+	int  awardcount = 0;
 
 	uint pulsatorUP = 100u;
 	char pulsatorUP_text[10];

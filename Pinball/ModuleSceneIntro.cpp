@@ -33,9 +33,18 @@ bool ModuleSceneIntro::Start()
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	scene = App->textures->Load("pinball/level_elements.png");
-	plattform_tex = App->textures->Load("pinball/plattform.png");
 	
-	font_name = App->fonts->Load("pinball/Font.png", "0123456789ABCDEFGHIJKLMNOPQRSTUWYZ+-", 1);
+	plattform_tex = App->textures->Load("pinball/plattform.png");
+
+	card_reverse = App->textures->Load("pinball/card_reverse.png");
+	card10 = App->textures->Load("pinball/card10.png");
+	cardJ = App->textures->Load("pinball/cardJ.png");
+	cardQ = App->textures->Load("pinball/cardQ.png");
+	cardK = App->textures->Load("pinball/cardK.png");
+	cardAs = App->textures->Load("pinball/cardAs.png");
+	lights = App->textures->Load("pinball/lights.png");
+	
+	font_name = App->fonts->Load("pinball/Font.png", "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1);
 	font2 = App->fonts->Load("pinball/Font2.png", "0123456789", 1);
 	fontblue = App->fonts->Load("pinball/Font-blue.png", " 123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1);
 	fontlightblue = App->fonts->Load("pinball/Font-light-blue.png", " 123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1);
@@ -46,6 +55,9 @@ bool ModuleSceneIntro::Start()
 	numeric_hit = App->audio->LoadFx("pinball/audio/numeric_hit.wav");
 	card_hit = App->audio->LoadFx("pinball/audio/card_hit.wav");
 	egg_hit  = App->audio->LoadFx("pinball/audio/egg_hit.wav");
+	award = App->audio->LoadFx("pinball/audio/award.wav");
+
+	App->audio->PlayMusic("pinball/audio/music.ogg");
 
 	stage = ST_TITLE_SCREEN;
 
@@ -57,7 +69,14 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	App->textures->Unload(scene);
-
+	App->textures->Unload(card10);
+	App->textures->Unload(cardAs);
+	App->textures->Unload(cardJ);
+	App->textures->Unload(cardK);
+	App->textures->Unload(cardQ);
+	App->textures->Unload(lights);
+	App->textures->Unload(card_reverse);
+	
 	return true;
 }
 
@@ -132,22 +151,33 @@ update_status ModuleSceneIntro::Update()
 	if (stage != ST_TITLE_SCREEN)
 	{
 		//print of the top score
-		sprintf_s(topscore_text, 10, "%7d", topscore);
+		sprintf_s(topscore_text, 10, "%06d", topscore);
 		App->fonts->BlitText(5, 40, font_name, topscore_text);
 		App->fonts->BlitText(20, 25, font_name, "TOP");
 
+		//print of the previous top score
+		sprintf_s(previousscore_text, 10, "%06d", previousscore);
+		App->fonts->BlitText(5, 120, font_name, previousscore_text);
+		App->fonts->BlitText(10, 105, font_name, "PREV");
+
+
 		//print of the current score
-		sprintf_s(score_text, 10, "%7d", score);
+		sprintf_s(score_text, 10, "%06d", score);
 		App->fonts->BlitText(5, 80, font_name, score_text);
 		App->fonts->BlitText(20, 65, font_name, "1UP");
 
 		//print of the number of balls
-		sprintf_s(ball_text, 10, "%7d", ball);
+		sprintf_s(ball_text, 10, "%02d", ball);
 		App->fonts->BlitText(35, 170, font_name, ball_text);
 		App->fonts->BlitText(20, 155, font_name, "BALL");
 	}
 	
-
+	if (awardcount >= 5)
+	{
+		ball++;
+		App->audio->PlayFx(award);
+		awardcount = 0;
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -299,6 +329,7 @@ void ModuleSceneIntro::LowStageBlit() {
 	scene_rect.h = 11;
 	App->renderer->Blit(scene, 4, 39, &scene_rect); // topScore box blit
 	App->renderer->Blit(scene, 4, 79, &scene_rect); // Score box blit
+	App->renderer->Blit(scene, 4, 119, &scene_rect); // Score box blit
 	scene_rect.x = 1;
 	scene_rect.y = 316;
 	scene_rect.w = 19;
@@ -346,6 +377,7 @@ void ModuleSceneIntro::LowStageBlit() {
 		scene_rect.h = 18;
 		App->renderer->Blit(scene, 156, 182, &scene_rect); // Right flicker blit
 	}
+	CardBlit();
 }
 
 void ModuleSceneIntro::HighStageBlit() {
@@ -388,42 +420,42 @@ void ModuleSceneIntro::HighStageBlit() {
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 88, 39, &scene_rect);
+	//App->renderer->Blit(scene, 88, 39, &scene_rect);
 	scene_rect.x = 61;	// Second (from above) circle blit
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 83, 48, &scene_rect);
+//	App->renderer->Blit(scene, 83, 48, &scene_rect);
 	scene_rect.x = 61;	// Three (from above) circle blit
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 78, 57, &scene_rect);
+//	App->renderer->Blit(scene, 78, 57, &scene_rect);
 	scene_rect.x = 61;	// Fourth (from above) circle blit
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 76, 67, &scene_rect);
+//	App->renderer->Blit(scene, 76, 67, &scene_rect);
 	scene_rect.x = 61;	// Fifth (from above) circle blit
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 76, 77, &scene_rect);
+//	App->renderer->Blit(scene, 76, 77, &scene_rect);
 	scene_rect.x = 61;	// Sixth (from above) circle blit
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 78, 88, &scene_rect);
+//	App->renderer->Blit(scene, 78, 88, &scene_rect);
 	scene_rect.x = 61;	// Seventh (from above) circle blit
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 83, 97, &scene_rect);
+	//App->renderer->Blit(scene, 83, 97, &scene_rect);
 	scene_rect.x = 61;	// Eight (from above) circle blit
 	scene_rect.y = 169;
 	scene_rect.w = 4;
 	scene_rect.h = 5;
-	App->renderer->Blit(scene, 88, 105, &scene_rect);
+	//App->renderer->Blit(scene, 88, 105, &scene_rect);
 	scene_rect.x = 29;	// Left wallrus blit
 	scene_rect.y = 79;
 	scene_rect.w = 16;
@@ -517,6 +549,7 @@ void ModuleSceneIntro::HighStageBlit() {
 	scene_rect.h = 11;
 	App->renderer->Blit(scene, 4, 39, &scene_rect); // topScore box blit
 	App->renderer->Blit(scene, 4, 79, &scene_rect); // Score box blit
+	App->renderer->Blit(scene, 4, 119, &scene_rect); // Score box blit
 	scene_rect.x = 1;
 	scene_rect.y = 316;
 	scene_rect.w = 19;
@@ -526,6 +559,8 @@ void ModuleSceneIntro::HighStageBlit() {
 	//blit of the pulsator award
 	sprintf_s(pulsatorUP_text, 10, "%7d", pulsatorUP);
 	App->fonts->BlitText(95, 64, font2, pulsatorUP_text);
+
+	LightBLit();
 }
 
 void ModuleSceneIntro::ChargeLowStage() {
@@ -533,30 +568,25 @@ void ModuleSceneIntro::ChargeLowStage() {
 	CreateFlicker();
 
 	App->physics->CreateCircle(143, 113, 30, false);// Orange circle hitbox
-	bumperSensors.add(App->physics->CreateCircleSensor(143 * SCREEN_SIZE, 113 * SCREEN_SIZE, 30)); //sensor for the hitbox	
-	
+	bumperSensors.add(App->physics->CreateRectangleSensor(143, 113, 20, 20)); //sensor for the hitbox	
+
 	App->physics->CreateCircle(122, 79, 30, false);		// Left pink circle hitbox
-	bumperSensors.add(App->physics->CreateCircleSensor(122 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
-	
+	bumperSensors.add(App->physics->CreateRectangleSensor(122, 79, 20, 20)); //sensor for the hitbox	
+
 	App->physics->CreateCircle(163, 79, 30, false);		// Right pink circle hitbox
-	bumperSensors.add(App->physics->CreateCircleSensor(163 * SCREEN_SIZE, 79 * SCREEN_SIZE, 30)); //sensor for the hitbox	
-	
+	bumperSensors.add(App->physics->CreateRectangleSensor(163, 79, 20, 20)); //sensor for the hitbox	
+
 	App->physics->CreateRectangle(233, 80, 4, 162, false); // Last right border hitbox
 		
 	App->physics->CreateRectangle(104, 50, 3, 12, false);	// First (from left) palet under the green cards hitbox
-	cardSensors.add(App->physics->CreateRectangleSensor(111, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(120, 50, 3, 12, false);	// Second (from left) palet under the green cards hitbox
-	cardSensors.add(App->physics->CreateRectangleSensor(127, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(136, 50, 3, 12, false);	// Third (from left) palet under the green cards hitbox
-	cardSensors.add(App->physics->CreateRectangleSensor(143, 45, 4, 2)); //sensor for the first green card
 	
 	App->physics->CreateRectangle(152, 50, 3, 12, false);	// Fourth (from left) palet under the green cards hitbox
-	cardSensors.add(App->physics->CreateRectangleSensor(159, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(168, 50, 3, 12, false);	// Fifth (from left) palet under the green cards hitbox
-	cardSensors.add(App->physics->CreateRectangleSensor(175, 45, 4, 2)); //sensor for the first green card
 
 	App->physics->CreateRectangle(184, 50, 3, 12, false);	// Sixth (from left) palet under the green cards hitbox
 	// Low scene charge
@@ -585,6 +615,15 @@ void ModuleSceneIntro::ChargeLowStage() {
 	tagSensors.add(App->physics->CreateRectangleSensor(81, 66, 2, 7));
 	tagSensors.add(App->physics->CreateRectangleSensor(81, 58, 2, 7));
 
+	// Cards sensors
+
+	tenSensor = (App->physics->CreateRectangleSensor(111, 48, 5, 2)); //sensor for the first green card
+	JSensor = (App->physics->CreateRectangleSensor(127, 48, 5, 2)); //sensor for the first green card
+	QSensor = (App->physics->CreateRectangleSensor(143, 48, 5, 2)); //sensor for the first green car
+	KSensor = (App->physics->CreateRectangleSensor(159, 48, 5, 2)); //sensor for the first green card
+	AsSensor = (App->physics->CreateRectangleSensor(175, 48, 5, 2)); //sensor for the first green card
+
+
 	loseSensor = App->physics->CreateRectangleSensor(143, SCREEN_HEIGHT, 48, 5);
 }
 
@@ -594,7 +633,7 @@ void ModuleSceneIntro::ChargeHighStage() {
 
 	// High scene scenario
 	App->physics->CreateCircle(146, 101, 30, false);		// Pink circle hitbox
-	bumperSensors.add(App->physics->CreateCircleSensor(146 * SCREEN_SIZE, 101 * SCREEN_SIZE, 30)); //((we send the position of the sensor, and the score
+	bumperSensors.add(App->physics->CreateRectangleSensor(146, 101, 20, 20)); //((we send the position of the sensor, and the score
 
 	App->physics->CreateRectangle(136, 62, 3, 12, false);	// First (from left) palet under the scores
 	App->physics->CreateRectangle(152, 62, 3, 12, false);	// Second (from left) palet under the scores
@@ -617,14 +656,14 @@ void ModuleSceneIntro::ChargeHighStage() {
 	hundred_scoreSensors.add(App->physics->CreateChainSensor(0, 0, scene5, 12));
 
 	//sensors for the lights (yellow dots in upper left screen)
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(90, 107, 4, 4));
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(85, 99, 4, 4));
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(80, 90, 4, 4));
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(78, 79, 4, 4));
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(78, 69, 4, 4));
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(80, 59, 4, 4));
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(85, 50, 4, 4));
-	hundred_scoreSensors.add(App->physics->CreateRectangleSensor(90, 41, 4, 4));
+	light1 = (App->physics->CreateRectangleSensor(90, 107, 4, 4));
+	light2 = (App->physics->CreateRectangleSensor(85, 99, 4, 4));
+	light3 = (App->physics->CreateRectangleSensor(80, 90, 4, 4));
+	light4 = (App->physics->CreateRectangleSensor(78, 79, 4, 4));
+	light5 = (App->physics->CreateRectangleSensor(78, 69, 4, 4));
+	light6 = (App->physics->CreateRectangleSensor(80, 59, 4, 4));
+	light7 = (App->physics->CreateRectangleSensor(85, 50, 4, 4));
+	light8 = (App->physics->CreateRectangleSensor(90, 41, 4, 4));
 
 	//sensors for table numbers: 500,1000,...
 	fivehundred_scoreSensors.add(App->physics->CreateRectangleSensor(206, 98, 3, 4));
@@ -731,4 +770,127 @@ void ModuleSceneIntro::pinkPlatformUpdate()
 	pinkPlattformSensor->body->SetLinearVelocity(pVel);
 	App->renderer->Blit(plattform_tex, x / SCREEN_SIZE, y / SCREEN_SIZE, NULL, 1.0f, plat->GetRotation());
 
+}
+
+void ModuleSceneIntro::CardBlit()
+{
+
+	// -2 and -25 are there because the sensors is between the panels but the cards are printed above them
+	if (reverse10)
+	{
+		int x, y;
+		tenSensor->GetPosition(x, y);
+		App->renderer->Blit(card10, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+	else
+	{
+		int x, y;
+		tenSensor->GetPosition(x, y);
+		App->renderer->Blit(card_reverse, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+
+	if (reverseJ)
+	{
+		int x, y;
+		JSensor->GetPosition(x, y);
+		App->renderer->Blit(cardJ, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+	else
+	{
+		int x, y;
+		JSensor->GetPosition(x, y);
+		App->renderer->Blit(card_reverse, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+
+
+	if (reverseQ)
+	{
+		int x, y;
+		QSensor->GetPosition(x, y);
+		App->renderer->Blit(cardQ, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+	else
+	{
+		int x, y;
+		QSensor->GetPosition(x, y);
+		App->renderer->Blit(card_reverse, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+
+	if (reverseK)
+	{
+		int x, y;
+		KSensor->GetPosition(x, y);
+		App->renderer->Blit(cardK, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+	else
+	{
+		int x, y;
+		KSensor->GetPosition(x, y);
+		App->renderer->Blit(card_reverse, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+
+	if (reverseAs)
+	{
+		int x, y;
+		AsSensor->GetPosition(x, y);
+		App->renderer->Blit(cardAs, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+	else
+	{
+		int x, y;
+		AsSensor->GetPosition(x, y);
+		App->renderer->Blit(card_reverse, (x / SCREEN_SIZE) - 2, (y / SCREEN_SIZE) - 25, NULL, 1.0f);
+	}
+}
+
+void ModuleSceneIntro:: LightBLit()
+{
+	if (!collected1)
+	{
+		int x, y;
+		light1->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
+	if (!collected2)
+	{
+		int x, y;
+		light2->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
+	if (!collected3)
+	{
+		int x, y;
+		light3->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
+	if (!collected4)
+	{
+		int x, y;
+		light4->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
+	if (!collected5)
+	{
+		int x, y;
+		light5->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
+	if (!collected6)
+	{
+		int x, y;
+		light6->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
+	if (!collected7)
+	{
+		int x, y;
+		light7->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
+	if (!collected8)
+	{
+		int x, y;
+		light8->GetPosition(x, y);
+		App->renderer->Blit(lights, (x / SCREEN_SIZE), (y / SCREEN_SIZE), NULL, 1.0f);
+	}
 }
