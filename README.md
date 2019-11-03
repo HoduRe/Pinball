@@ -2,29 +2,41 @@
 
 A replica of the original Pinball.
 
-### The project can be found at: https://github.com/ferba93/Pinball
+### The project can be found at: https://github.com/ferba93/Pinball <br>The original game can be found at: https://www.retrogames.cz/play_054-NES.php
 
 ## Installation
 
 Currently there is no installation required, just open the .exe provided in the download file
 
-### General Controls :
-	ESC: Close the game
-
 ### Debug Controls:<br>
+	ESC: Close the game
 	F1: Draws all shapes and allows mouse joint control
+	1: Creates a circle
 
 ### Player Controls: <br>
+<ul>-Space: selects a player<br>
+-Left arrow: left flicker<br>
+-Rigth arrow: right flicker<br>
+-Down arrow: kicker
+</ul>
 
 ## Differences
 
-<ul>-The upper left balls from the higher stage are slightly differently positioned, since we couldn't find a sprite for them,
+<ul>-The ball doesn't behave as an elastic element (it doesn't bounce), so movement is not the same. To prevent the ball from staying put, the down arrow can
+be used to apply a force to it<br>
+-The red holes do not suck and spit the ball when it enters in contact with them
+-The upper left balls from the higher stage are slightly differently positioned, since we couldn't find a sprite for them,
 which led to having different size, and so, to being in a different place than intended<br>
 -The kicker doesn't compress: instead, it just goes down<br>
+-Not all audios have been implemented or found<br>
+-Not all objects interact when the ball goes through them, and not all combos are implemented<br>
 </ul>
 
 ## Credits
-
+Creators:<br>
+<ul>-David Carrasquet: https://github.com/davidcarrasquet<br>
+-Ferran-Roger Basart: https://github.com/ferba93
+</ul>
 
 ## License
 

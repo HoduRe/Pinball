@@ -1,8 +1,0 @@
-Add UI
-Add combo score
-Implement audios
-Add elements change when hit
-Red blocks spit the ball when entered
-Make it glow orange when all cards are flipped
-Check memory leaks
-Playtest
