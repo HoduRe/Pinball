@@ -30,6 +30,8 @@ bool ModuleSceneIntro::Start()
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	scene = App->textures->Load("pinball/level_elements.png");
+	plattform_tex = App->textures->Load("pinball/plattform.png");
+	
 	font_name = App->fonts->Load("pinball/Font.png", "0123456789ABCDEFGHIJKLMNOPQRSTUWYZ+-", 1);
 	font2 = App->fonts->Load("pinball/Font2.png", "0123456789", 1);
 	fontblue = App->fonts->Load("pinball/Font-blue.png", " 123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1);
@@ -116,12 +118,8 @@ update_status ModuleSceneIntro::Update()
 			ChargeHighStage();
 		}
 		HighStageBlit();
+		pinkPlatformUpdate();
 	}	
-
-	if (score > topscore)
-	{
-		topscore=score;
-	}
 
 	if (stage != ST_TITLE_SCREEN)
 	{
@@ -410,11 +408,6 @@ void ModuleSceneIntro::HighStageBlit() {
 	scene_rect.w = 16;
 	scene_rect.h = 17;
 	App->renderer->Blit(scene, 163, 113, &scene_rect);
-	scene_rect.x = 113;	// Pink moving platform blit
-	scene_rect.y = 33;
-	scene_rect.w = 14;
-	scene_rect.h = 5;
-	App->renderer->Blit(scene, SCREEN_WIDTH / 2, 138, &scene_rect);
 	scene_rect.x = 10;	// Left penguin blit
 	scene_rect.y = 8;
 	scene_rect.w = 12;
@@ -472,6 +465,19 @@ void ModuleSceneIntro::HighStageBlit() {
 		scene_rect.h = 18;
 		App->renderer->Blit(scene, 156, 182, &scene_rect); // Right flicker blit
 	}
+
+	scene_rect.x = 1;
+	scene_rect.y = 304;
+	scene_rect.w = 51;
+	scene_rect.h = 11;
+	App->renderer->Blit(scene, 4, 39, &scene_rect); // topScore box blit
+	App->renderer->Blit(scene, 4, 79, &scene_rect); // Score box blit
+	scene_rect.x = 1;
+	scene_rect.y = 316;
+	scene_rect.w = 19;
+	scene_rect.h = 11;
+	App->renderer->Blit(scene, 34, 169, &scene_rect); //ball num blit
+
 	//blit of the pulsator award
 	sprintf_s(pulsatorUP_text, 10, "%7d", pulsatorUP);
 	App->fonts->BlitText(95, 64, font2, pulsatorUP_text);
@@ -592,7 +598,12 @@ void ModuleSceneIntro::ChargeHighStage() {
 	p.y = 5;
 	pulsator= App->physics->CreateRectangleSensor(107, 80, 10, 2);
 	pulsator->body->SetTransform(p, 15); //rotate the rectangle
-	
+
+	//pink plattform sensor
+	pinkPlattformSensor = (App->physics->CreateRectangleSensor(113, 140, 14, 5));
+	pinkPlattformSensor->body->SetType(b2_kinematicBody);
+	plat = App->physics->CreateRectangle(113, 140, 14, 5, true);
+	plat->body->SetType(b2_kinematicBody);	
 
 }
 
@@ -607,6 +618,10 @@ void ModuleSceneIntro::CreateFlicker() {
 
 void ModuleSceneIntro::ScoreUpdater(uint s) {
 	score += s;
+	if (score > topscore)
+	{
+		topscore = score;
+	}
 }
 
 void ModuleSceneIntro::CreatePlayer(float x, float y) {
@@ -639,4 +654,36 @@ void ModuleSceneIntro::CheckOneWayColliders() {
 			}
 		}
 	}
+}
+
+void ModuleSceneIntro::pinkPlatformUpdate()
+{
+	int x, y;
+	//We check if the position of the plattform is off one limit, then we set the state to moving to the opposite side
+   // The limits we set may look weird because positions are set in float32 vectors
+	if (plat->body->GetPosition().x >= 9.5)
+	{
+		pstate = ST_LEFT;
+	}
+
+	if (plat->body->GetPosition().x <= 7.5)
+	{
+		pstate = ST_RIGHT;
+	}
+	//We set linear velocity to the body depending on the move state
+	switch (pstate)
+	{
+	case ST_RIGHT:
+		pVel.x = 1;
+
+		break;
+	case ST_LEFT:
+		pVel.x = -1;
+
+	}
+	plat->body->SetLinearVelocity(pVel);
+	plat->GetPosition(x, y);
+	pinkPlattformSensor->body->SetLinearVelocity(pVel);
+	App->renderer->Blit(plattform_tex, x / SCREEN_SIZE, y / SCREEN_SIZE, NULL, 1.0f, plat->GetRotation());
+
 }

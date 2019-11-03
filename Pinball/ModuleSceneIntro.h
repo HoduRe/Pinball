@@ -13,6 +13,11 @@ enum stage_state {
 	ST_HIGH_STAGE,
 	ST_BONUS_STAGE
 };
+enum plat_state
+{
+	ST_LEFT,
+	ST_RIGHT,
+};
 
 class PhysBody;
 
@@ -63,7 +68,18 @@ public:
 	PhysBody* pulsator;
 	b2Vec2 p;
 
-	
+	//Moving platform
+	SDL_Texture* plattform_tex;
+	PhysBody* plat;
+	float pinkPlattformPos = 115; //we wont change Y pos
+	void pinkPlatformUpdate();
+	bool Rightlimit = false;
+	bool Leftlimit = true;
+
+	b2Vec2 pVel;
+
+
+	plat_state pstate;
 	
 	//FX
 	uint bonus_fx;
@@ -103,7 +119,9 @@ public:
 	p2List<PhysBody*> yellowSquareSensors;
 	p2List<PhysBody*> tagSensors;
 	p2List<PhysBody*> cardSensors;
-	p2List<PhysBody*> variableSensors;	
+	p2List<PhysBody*> variableSensors;
+	PhysBody* pinkPlattformSensor;
+	
 	p2List<PhysBody*> fivehundred_scoreSensors;	
 	p2List<PhysBody*> thousand_scoreSensors;
 	
