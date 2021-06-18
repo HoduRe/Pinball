@@ -2,7 +2,7 @@
 
 A replica of the original Pinball.
 
-### The project can be found at: https://github.com/ferba93/Pinball <br>The original game can be found at: https://www.retrogames.cz/play_054-NES.php
+### The project can be found at: https://github.com/hodure/Pinball <br>The original game can be found at: https://www.retrogames.cz/play_054-NES.php
 
 ## Installation
 
@@ -35,7 +35,7 @@ which led to having different size, and so, to being in a different place than i
 ## Credits
 Creators:<br>
 <ul>-David Carrasquet: https://github.com/davidcarrasquet<br>
--Ferran-Roger Basart: https://github.com/ferba93
+-Ferran-Roger Basart: https://github.com/hodure
 </ul>
 
 ## License
